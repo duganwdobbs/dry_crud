@@ -9,7 +9,7 @@
 # action procedures without overriding the entire method.
 class CrudController < ListController
 
-  class_attribute :permitted_attrs
+  class_attribute :permitted_attrs, :crud_attrs
 
   # Defines before and after callback hooks for create, update, save and
   # destroy actions.
@@ -30,7 +30,9 @@ class CrudController < ListController
   #   GET /entries/1.json
   #
   # Show one entry of this model.
-  def show; end
+  def show
+    authorize(entry)
+  end
 
   #   GET /entries/new
   #   GET /entries/new.json
@@ -38,6 +40,7 @@ class CrudController < ListController
   # Display a form to create a new entry of this model.
   def new
     assign_attributes if params[model_identifier]
+    authorize(entry)
   end
 
   #   POST /entries
@@ -55,6 +58,7 @@ class CrudController < ListController
   def create(options = {}, &block)
     model_class.transaction do
       assign_attributes
+      authorize(entry)
       created = with_callbacks(:create, :save) { entry.save }
       respond(created,
               options.merge(status: :created, render_on_failure: :new),
@@ -66,7 +70,9 @@ class CrudController < ListController
   #   GET /entries/1/edit
   #
   # Display a form to edit an exisiting entry of this model.
-  def edit; end
+  def edit
+    authorize(entry)
+  end
 
   #   PUT /entries/1
   #   PUT /entries/1.json
@@ -83,6 +89,7 @@ class CrudController < ListController
   def update(options = {}, &block)
     model_class.transaction do
       assign_attributes
+      authorize(entry)
       updated = with_callbacks(:update, :save) { entry.save }
       respond(updated,
               options.merge(status: :ok, render_on_failure: :edit),
@@ -104,6 +111,7 @@ class CrudController < ListController
   #
   # Specify a :location option if you wish to do a custom redirect.
   def destroy(options = {}, &block)
+    authorize(entry)
     model_class.transaction do
       destroyed = run_callbacks(:destroy) { entry.destroy }
       respond(destroyed,

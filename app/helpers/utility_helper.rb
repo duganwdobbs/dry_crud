@@ -40,8 +40,14 @@ module UtilityHelper
   # These are all defined attributes except certain special ones like
   # 'id' or 'position'.
   def default_crud_attrs
-    attrs = model_class.column_names.map(&:to_sym)
-    attrs - %i[id position password]
+    if controller.crud_attrs.is_a? Array
+      controller.crud_attrs
+    elsif controller.crud_attrs.is_a? Proc
+      controller.instance_exec(&controller.crud_attrs) & model_class.column_names.map(&:to_sym)
+    else
+      attrs = model_class.column_names.map(&:to_sym)
+      attrs - %i[id position password encrypted_password]
+    end
   end
 
   # Returns the ActiveRecord column type or nil.

@@ -7,6 +7,7 @@
 # * #crud_table - A sortable #plain_table for the current +entries+, with the
 #   given attributes or default and the standard crud action links.
 module TableHelper
+  include Pagy::Frontend
 
   # Renders a table for the given entries. One column is rendered for each
   # attribute passed. If a block is given, the columns defined therein are
@@ -54,10 +55,14 @@ module TableHelper
   # An options hash for the table builder may be given as the last argument.
   def crud_table(*attrs, &block)
     attrs, options = explode_attrs_with_options(attrs, &block)
-    first = attrs.shift
+    first, rest = if policy(entry).show?
+      [attrs.first, attrs.drop(1)]
+    else
+      [nil, attrs]
+    end
     plain_table_or_message(entries, options) do |t|
       t.attr_with_show_link(first) if first
-      t.sortable_attrs(*attrs)
+      t.sortable_attrs(*rest)
       yield t if block_given?
       standard_table_actions(t)
     end
@@ -65,8 +70,9 @@ module TableHelper
 
   # Adds standard action link columns (edit, destroy) to the given table.
   def standard_table_actions(table)
-    table.edit_action_col
-    table.destroy_action_col
+    table.show_action_col if policy(entry).show?
+    table.edit_action_col if policy(entry).edit?
+    table.destroy_action_col if policy(entry).destroy?
   end
 
   private

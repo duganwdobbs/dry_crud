@@ -2,4 +2,4 @@
 
 - content_for(:actions, render('actions_edit'))
 
-= render 'form'
+= render 'form_with_header', title: "Editing #{entry.to_s}"

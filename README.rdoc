@@ -31,6 +31,7 @@ If a dry_crud file exists in your application, it will be used, if not, the one 
 To integrate dry_crud into your code, only a few additions are required:
 
 * For uniform CRUD functionality, just subclass your controllers from CrudController and define the +permitted_attrs+ (for StrongParameters).
+* Optionally defina a +crud_attrs+ class variable that is an array or block that returns an array of modde field names in your controller to limit what is crud'able.
 * Overwrite the +to_s+ method of your models for a human-friendly representation in captions.
 * Optionally define a +list+ scope in your models to be used in the +index+ action.
 * Optionally define a +options_list+ scope in your models to be used in select dropdowns.
@@ -50,11 +51,13 @@ The main idea of dry_crud is to concentrate basic functionality of your applicat
 
 dry_crud is a Rails generator. All code resides in your application and is open for you to inspect and to extend. You may pick whatever you consider useful or adapt what is not sufficient. Even if you do not require any CRUD functionality, you might find some helpers simplifying your work. There are no runtime dependencies to the dry_crud gem. Having said this, dry_crud does not want to provide a maximum of functionality that requires a lot of configuration, but rather a clean and lightweight foundation to build your application's requirements upon. This is why dry_crud comes as a generator and not as a Rails extension.
 
-dry_crud does not depend on any other gems, but easily allows you to integrate them in order to unify the behavior of your CRUD controllers. You might even use the gems mentioned above to adapt your generated CrudController base class. All classes come with thorough tests that provide you with a solid foundation for implementing your own adaptions.
+dry_crud does not depend on any other gems*, but easily allows you to integrate them in order to unify the behavior of your CRUD controllers. You might even use the gems mentioned above to adapt your generated CrudController base class. All classes come with thorough tests that provide you with a solid foundation for implementing your own adaptions.
+
+* This fork DOES have dependencies - pagy for pagination, pundit for authorization, and slim for views.  They were added because we always (so far) use these features.  In the future, we could abstract them out and only use them if they're present or using some kind of configration with an adapter pattern.
 
 A basic CSS gets you started with your application's layout. For advanced needs, dry_crud supports the styles and classes used in {Bootstrap 4}[http://getbootstrap.com]. A great design never was so close.
 
-If you find yourself adapting the same parts of dry_crud for your applications over and over, please feel free to {fork me on Github}[http://github.com/codez/dry_crud].
+If you find yourself adapting the same parts of dry_crud for your applications over and over (we did), please feel free to {fork me on Github}[http://github.com/codez/dry_crud].
 
 See the Examples section for some use cases and the Generated Files section below for details on the single classes and templates.
 

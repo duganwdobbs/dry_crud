@@ -12,6 +12,7 @@ class ListController < ApplicationController
   prepend DryCrud::Nestable
   include DryCrud::RenderCallbacks
   include DryCrud::Rememberable
+  include Pagy::Backend
 
   define_render_callbacks :index
 
@@ -42,7 +43,8 @@ class ListController < ApplicationController
   # <tt>ActiveRecord::Relation</tt>.
   # Some of the modules included extend this method.
   def list_entries
-    model_class.respond_to?(:list) ? model_scope.list : model_scope
+    @pagy, @records = pagy(policy_scope(model_class))
+    @records
   end
 
   # Include these modules after the #list_entries method is defined.

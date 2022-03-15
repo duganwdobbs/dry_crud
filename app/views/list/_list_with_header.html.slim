@@ -1,0 +1,11 @@
+.p-3
+  .card
+    .card-header
+      = render 'list_header'
+    .card-body
+      = content_for :tools
+      = render 'list'
+      .text-center
+        .fw-light.fs-6== pagy_info(@pagy)
+        hr
+        .d-flex.justify-content-center== pagy_bootstrap_nav(@pagy)

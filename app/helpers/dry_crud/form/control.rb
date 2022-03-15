@@ -16,7 +16,7 @@ module DryCrud
 
       # Number of default input field span columns depending
       # on the #field_method.
-      INPUT_SPANS = Hash.new(8)
+      INPUT_SPANS = Hash.new(12)
       INPUT_SPANS[:number_field] =
         INPUT_SPANS[:integer_field] =
           INPUT_SPANS[:float_field] =
@@ -68,12 +68,25 @@ module DryCrud
 
       private
 
+      def prefix
+        @prefix ||= case field_method.to_sym
+                    when :password_field
+                      tag.i('', class: %i[bi bi-key-fill])
+                    when :email_field then '@'
+                    else
+                      if attr.to_s.include?('name')
+                        tag.i('', class: %i[bi bi-person-fill])
+                      end
+                    end
+      end
+
       # Create the HTML markup for any labeled content.
       def labeled
-        errors = errors? ? ' has-error' : ''
+        container_classes = %w[mb-3 small fw-bold]
+        container_classes += 'text-danger' if errors?
 
-        tag.div(class: "form-group#{errors}") do
-          builder.label(attr, caption, class: 'col-md-2 control-label') +
+        tag.div(class: container_classes) do
+          builder.label(attr, caption, class: 'col-md-12 form-label') +
             tag.div(content, class: "col-md-#{span}")
         end
       end
@@ -86,11 +99,7 @@ module DryCrud
       def content
         @content ||= begin
           content = input
-          if addon
-            content = builder.with_addon(content, addon)
-          elsif required
-            content = builder.with_addon(content, REQUIRED_MARK)
-          end
+          content = builder.with_addon(content, prefix: prefix, addon: addon || REQUIRED_MARK)
           content << builder.help_block(help) if help.present?
           content
         end
@@ -137,6 +146,7 @@ module DryCrud
 
       # Defines the field method to use based on the attribute
       # type, association or name.
+      # rubocop:disable PerceivedComplexity
       def detect_field_method
         if type == :text
           :text_area
@@ -154,6 +164,7 @@ module DryCrud
           :text_field
         end
       end
+      # rubocop:enable PerceivedComplexity
 
       # The column type of the attribute.
       def type

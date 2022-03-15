@@ -57,9 +57,10 @@ module DryCrud
         action_col do |entry|
           path = action_path(entry, &block)
           if path
-            table_action_link('remove',
+            table_action_link('trash',
                               path,
                               html_options.merge(
+                                class: 'text-danger',
                                 data: { confirm: ti(:confirm_delete),
                                         method: :delete }
                               ))
@@ -75,7 +76,7 @@ module DryCrud
 
       # Generic action link inside a table.
       def table_action_link(icon, url, html_options = {})
-        add_css_class(html_options, "icon icon-#{icon}")
+        add_css_class(html_options, "bi bi-#{icon}")
         link_to('', url, html_options)
       end
 

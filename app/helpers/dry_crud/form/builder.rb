@@ -156,10 +156,12 @@ module DryCrud
       end
 
       # Renders the given content with an addon.
-      def with_addon(content, addon)
+      def with_addon(content, prefix: nil, addon: nil)
         tag.div(class: 'input-group') do
-          html = tag.span(addon, class: 'input-group-text')
-          content + tag.div(html, class: 'input-group-append')
+      	  prefix = tag.span(prefix, class: 'input-group-text') if prefix.present?
+      	  suffix = tag.span(addon, class: 'input-group-text') if addon.present?
+
+      	  [prefix, content, suffix].compact.join.html_safe
         end
       end
 
@@ -170,27 +172,27 @@ module DryCrud
 
       # Generates a help block for fields
       def help_block(text)
-        tag.p(text, class: 'help-block')
+        tag.p(text, class: 'text-secondary fw-lighter small')
       end
 
       # Render a submit button and a cancel link for this form.
       def standard_actions(submit_label = ti('button.save'), cancel_url = nil)
         tag.div(class: 'col-md-offset-2 col-md-8') do
           safe_join([submit_button(submit_label),
-                     cancel_link(cancel_url)],
+                     cancel_button(cancel_url)],
                     ' ')
         end
       end
 
       # Render a standard submit button with the given label.
       def submit_button(label = ti('button.save'))
-        button(label, class: 'btn btn-primary', data: { disable_with: label })
+        button(label, class: 'btn btn-primary me-3', data: { disable_with: label })
       end
 
       # Render a cancel link pointing to the given url.
-      def cancel_link(url = nil)
+      def cancel_button(url = nil)
         url ||= cancel_url
-        link_to(ti('button.cancel'), url, class: 'cancel')
+        link_to(ti('button.cancel'), url, class: 'cancel btn btn-outline-primary')
       end
 
       # Depending if the given attribute must be present, return

@@ -10,7 +10,9 @@ module DryCrud
       # direction.
       def sort_header(attr, label = nil)
         label ||= attr_header(attr)
-        template.link_to(label, sort_params(attr)) + current_mark(attr)
+        template.link_to(sort_params(attr), class: 'text-decoration-none') do
+          tag.span(label) + current_mark(attr)
+        end
       end
 
       # Same as :attrs, except that it renders a sort link in the header
@@ -38,13 +40,14 @@ module DryCrud
 
       # The sort mark, if any, for the given attribute.
       def current_mark(attr)
-        if current_sort?(attr)
-          # rubocop:disable Rails/OutputSafety
-          (sort_dir(attr) == 'asc' ? ' &uarr;' : ' &darr;').html_safe
-          # rubocop:enable Rails/OutputSafety
+        icon = if current_sort?(attr)
+          sort_dir(attr) == 'asc' ? 'sort-up' : 'sort-down'
+
         else
-          ''
+          'list'
         end
+
+        tag.i('', class: "bi bi-#{icon} ms-2")
       end
 
       # Returns true if the given attribute is the current sort column.

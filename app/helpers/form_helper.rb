@@ -10,7 +10,6 @@ module FormHelper
   # Renders a form using Crud::FormBuilder.
   def plain_form(object, options = {}, &block)
     options[:html] ||= {}
-    add_css_class(options[:html], 'form-horizontal')
     options[:html][:role] ||= 'form'
     options[:builder] ||= DryCrud::Form::Builder
     options[:cancel_url] ||= polymorphic_path(object, returning: true)

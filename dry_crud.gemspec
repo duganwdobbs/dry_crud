@@ -23,6 +23,9 @@ build a clean base to efficiently develop your application upon.
 END
 
   spec.add_dependency 'rails', '>= 6.0'
+  spec.add_dependency 'slim', '~> 4.1'
+  spec.add_dependency 'pagy', '~> 5.10'
+  spec.add_dependency 'pundit', '~> 2.2'
 
   readmes = FileList.new('*') do |list|
     list.exclude(/(^|[^.a-z])[a-z]+/)

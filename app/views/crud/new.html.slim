@@ -2,4 +2,4 @@
 
 - content_for(:actions, index_action_link)
 
-= render 'form'
+= render 'form_with_header', title: "New #{model_class.to_s}"
