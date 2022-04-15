@@ -1,6 +1,5 @@
 # encoding: UTF-8
 require 'rubygems'
-require 'rake'
 require 'date'
 
 DRY_CRUD_GEMSPEC = Gem::Specification.new do |spec|
@@ -27,15 +26,13 @@ END
   spec.add_dependency 'pagy', '~> 5.10'
   spec.add_dependency 'pundit', '~> 2.2'
 
-  readmes = FileList.new('*') do |list|
-    list.exclude(/(^|[^.a-z])[a-z]+/)
-    list.exclude('TODO')
-  end.to_a
+  files = Dir.glob('*').to_a
+  readmes = files - files.grep(/(^|[^.a-z])[a-z]+/) - ['TODO']
 
-  spec.files = FileList['app/**/*'].to_a +
-               FileList['config/**/*'].to_a +
-               FileList['lib/**/*'].to_a +
-               readmes
+  spec.files = Dir.glob('app/**/*').to_a +
+    Dir.glob('config/**/*').to_a +
+    Dir.glob('lib/**/*').to_a +
+    readmes
 
   spec.extra_rdoc_files = readmes
   spec.rdoc_options << '--title' << '"Dry Crud"' <<
