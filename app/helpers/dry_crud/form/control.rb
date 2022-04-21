@@ -83,7 +83,7 @@ module DryCrud
       # Create the HTML markup for any labeled content.
       def labeled
         container_classes = %w[mb-3 small fw-bold]
-        container_classes += 'text-danger' if errors?
+        container_classes << 'text-danger' if errors?
 
         tag.div(class: container_classes) do
           builder.label(attr, caption, class: 'col-md-12 form-label') +
