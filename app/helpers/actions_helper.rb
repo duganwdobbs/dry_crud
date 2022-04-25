@@ -66,7 +66,7 @@ module ActionsHelper
 
     path ||= path_args(model_class)
     path = path.is_a?(String) ? path : new_polymorphic_path(path, url_options)
-    action_link('', 'plus-lg', path, title: "Add a new #{models_label(plural: false).downcase}")
+    action_link(I18n.t(:add, scope: %i[list index], label: models_label(plural: false)), 'plus-lg', path, title: "Add a new #{models_label(plural: false).downcase}")
   end
 
 end

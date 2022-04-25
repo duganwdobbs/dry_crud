@@ -43,6 +43,7 @@ en:
   list:
     index:
       title: Listing %{models}
+      add: "%{label}"
 
   # crud controller
   crud:
