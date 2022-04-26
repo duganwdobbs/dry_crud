@@ -25,6 +25,7 @@ END
   spec.add_dependency 'slim', '~> 4.1'
   spec.add_dependency 'pagy', '~> 5.10'
   spec.add_dependency 'pundit', '~> 2.2'
+  spec.add_dependency 'breadcrumbs_on_rails', '~> 4.1'
 
   files = Dir.glob('*').to_a
   readmes = files - files.grep(/(^|[^.a-z])[a-z]+/) - ['TODO']

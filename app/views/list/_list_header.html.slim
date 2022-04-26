@@ -1,2 +1,6 @@
-.fw-light.h2.float-start=I18n.t(:title, scope: %i[list index], models: models_label)
-.float-end= content_for :actions
+.vstack
+  div
+    .fw-light.h2.float-start=I18n.t(:title, scope: %i[list index], models: models_label)
+    .float-end= content_for :actions
+  div
+    = render_breadcrumbs builder: BootstrapBreadcrumbsBuilder

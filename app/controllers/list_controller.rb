@@ -1,3 +1,5 @@
+require "breadcrumbs_on_rails"
+
 # Abstract controller providing a basic list action.
 # The loaded model entries are available in the view as an instance variable
 # named after the +model_class+ or by the helper method +entries+.
@@ -18,6 +20,8 @@ class ListController < ApplicationController
 
   helper_method :entries
 
+  before_action :set_breadcrumbs
+
   ##############  ACTIONS  ############################################
 
   #   GET /entries
@@ -26,6 +30,12 @@ class ListController < ApplicationController
   # List all entries of this model.
   def index
     entries
+  end
+
+  protected
+
+  def set_breadcrumbs
+    add_breadcrumb models_label, index_path
   end
 
   private

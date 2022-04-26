@@ -30,7 +30,7 @@ module DryCrud
         action_col do |entry|
           path = action_path(entry, &block)
           if path
-            table_action_link('zoom-in',
+            table_action_link('eye',
                               path,
                               html_options.clone)
           end

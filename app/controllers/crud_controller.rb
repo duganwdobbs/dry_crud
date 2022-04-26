@@ -8,6 +8,7 @@
 # With the help of additional callbacks, it is possible to hook into the
 # action procedures without overriding the entire method.
 class CrudController < ListController
+  include DisplayHelper
 
   class_attribute :permitted_attrs, :crud_attrs
 
@@ -32,6 +33,7 @@ class CrudController < ListController
   # Show one entry of this model.
   def show
     authorize(entry)
+    add_breadcrumb display_name(entry), show_path
   end
 
   #   GET /entries/new
@@ -41,6 +43,7 @@ class CrudController < ListController
   def new
     assign_attributes if params[model_identifier]
     authorize(entry)
+    add_breadcrumb "New #{models_label(plural: false)}"
   end
 
   #   POST /entries
@@ -72,6 +75,8 @@ class CrudController < ListController
   # Display a form to edit an exisiting entry of this model.
   def edit
     authorize(entry)
+    add_breadcrumb display_name(entry), show_path
+    add_breadcrumb "Edit"
   end
 
   #   PUT /entries/1
@@ -229,7 +234,7 @@ class CrudController < ListController
   # A label for the current entry, including the model name.
   def full_entry_label
     # rubocop:disable Rails/OutputSafety
-    "#{models_label(plural: false)} <i>#{ERB::Util.h(entry)}</i>".html_safe
+    "#{models_label(plural: false)} <i>#{display_name(entry)}</i>".html_safe
     # rubocop:enable Rails/OutputSafety
   end
 
