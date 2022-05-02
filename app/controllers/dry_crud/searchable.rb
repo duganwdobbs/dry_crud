@@ -23,7 +23,8 @@ module DryCrud
 
       # Enhance the list entries with an optional search criteria
       def list_entries
-        super.where(search_conditions)
+        @pagy, @records = pagy(super.where(search_conditions))
+        @records
       end
 
       # Concat the word clauses with AND.
