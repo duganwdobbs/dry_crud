@@ -7,7 +7,7 @@ en:
     "yes": "yes"
     "no": "no"
     no_list_entries: No entries found.
-    confirm_delete: Do you really want to delete this entry?
+    confirm_delete: Do you really want to delete this %{model}?
 
     associations:
       # association keys may be customized per model with the prefix

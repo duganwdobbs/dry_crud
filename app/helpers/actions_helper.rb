@@ -12,6 +12,13 @@ module ActionsHelper
             url, html_options)
   end
 
+  def action_button(label, icon = nil, url = {}, html_options = {})
+    html_options.reverse_merge!({ form: { class: 'd-inline-block ms-2' } })
+    add_css_class html_options, 'action btn btn-outline-primary'
+    label = action_icon(icon, label) if icon
+    button_to(label, url, html_options)
+  end
+
   # Outputs an icon for an action with an optional label.
   def action_icon(icon, label = nil)
     html = content_tag(:i, '', class: "bi bi-#{icon}")
@@ -44,9 +51,12 @@ module ActionsHelper
     return unless policy(entry).destroy?
 
     path ||= path_args(entry)
-    action_link(ti('link.delete'), 'trash', path,
-                { data: { confirm: ti(:confirm_delete),
-                        method: :delete }, class: 'btn-outline-danger' })
+    action_button(ti('link.delete'), 'trash', path,
+                {
+                  data: { confirm: ti(:confirm_delete, model: models_label(plural: false)) },
+                  method: :delete,
+                  class: 'btn-outline-danger'
+                })
   end
 
   # Standard list action to the given path.

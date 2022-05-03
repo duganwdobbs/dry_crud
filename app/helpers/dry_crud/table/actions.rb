@@ -10,7 +10,7 @@ module DryCrud
       extend ActiveSupport::Concern
 
       included do
-        delegate :link_to, :path_args, :edit_polymorphic_path, :ti,
+        delegate :link_to, :button_to, :path_args, :edit_polymorphic_path, :ti, :models_label,
                  to: :template
       end
 
@@ -57,13 +57,13 @@ module DryCrud
         action_col do |entry|
           path = action_path(entry, &block)
           if path
-            table_action_link('trash',
-                              path,
-                              html_options.merge(
-                                class: 'text-danger',
-                                data: { confirm: ti(:confirm_delete),
-                                        method: :delete }
-                              ))
+            table_action_button('trash',
+                                path,
+                                html_options.merge(
+                                  data: { confirm: ti(:confirm_delete, model: models_label(plural: false)) },
+                                  method: :delete,
+                                  class: 'text-danger'
+                                ))
           end
         end
       end
@@ -78,6 +78,12 @@ module DryCrud
       def table_action_link(icon, url, html_options = {})
         add_css_class(html_options, "bi bi-#{icon}")
         link_to('', url, html_options)
+      end
+
+      def table_action_button(icon, url, html_options = {})
+        html_options.reverse_merge!({ form: { class: 'd-inline-block' } })
+        add_css_class(html_options, "bi bi-#{icon} btn p-0 m-0")
+        button_to('', url, html_options)
       end
 
       private
