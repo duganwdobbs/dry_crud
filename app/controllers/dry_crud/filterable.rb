@@ -18,7 +18,6 @@ module DryCrud
 
     # Prepended methods for filtering.
     module Prepends
-      # TODO: TLA 5/2/2022 - See serchable and add needed methods to implement filtering on individual columns
 
       private
 
@@ -29,65 +28,93 @@ module DryCrud
         @records
       end
 
-      # Concat the word clauses with AND.
-      def filter_conditions
-        if filter_support? && params[:q].present?
-          # search_word_conditions.reduce do |query, condition|
-          #   query.and(condition)
-          # end
-        end
-      end
-
-
       # Returns true if this controller has searchable columns.
       def filter_support?
-        # search_columns.present?
-        true
+        filters.present?
       end
     end
 
     # Class methods for Filterable.
     module ClassMethods
+      # Use this to add a filter to a CrudController
+      #
+      # => For example
+      # class PersonController < CrudController
+      #   self.add_filter(:name, collection: %w[Bob Sally Jane])
+      #   ...
+      #
       def add_filter(attribute, options = {})
-        self.filters << Filter.new(attribute, options)
+        self.filters << Filter.new(model_class, attribute, options)
       end
     end
 
   end
 
-  class Filter
-    attr_reader :attribute, :options, :method
+  class Field
+    attr_reader :name, :label, :icon, :options
 
-    def initialize(attribute, options, method: nil)
-      @attribute = attribute
+    def initialize(name, label, icon, options)
+      @name = name
+      @label = label
+      @icon = icon
       @options = options
-      @method = method
+    end
+  end
+
+  class SearchField < Field; end
+
+  class SelectField < Field
+    attr_reader :collection
+
+    def initialize(name, label, icon, options, collection)
+      super(name, label, icon, options.reverse_merge(include_blank: true))
+      @collection = collection
+    end
+  end
+
+  class Filter
+    attr_reader :model_class, :attribute, :filter_fields, :collection, :icon, :options
+
+    def initialize(model_class, attribute, options)
+      @model_class = model_class
+      @attribute = attribute.to_s
+
+      @filter_fields = options.delete(:fields)
+      @collection = options.delete(:collection)
+      @icon = options.delete(:icon)
+      @options = options
     end
 
-    def ransack_attribute
-      # TODO: TLA 5/4/2022 - Handle strings, date ranges, numeric ranges, and boolean
-      # TODO: TLA 5/4/2022 - Allow for custom values as well, like 'first_name_or_last_name_cont' or something
-      "#{attribute}_cont"
-    end
+    # TODO: TLA 5/5/2022 - Add multi-select (select2?)
+    # TODO: TLA 5/5/2022 - Add date picker
+    # TODO: TLA 5/5/2022 - Add time picker?
 
-    # TODO: TLA 5/4/2022 - we probably don't need this method, but useful for reference for now
-    def default_input_type
-      if method =~ /_(eq|equals|cont|contains|start|starts_with|end|ends_with)\z/
-        :string
-      elsif model_class._ransackers.key?(method.to_s)
-        model_class._ransackers[method.to_s].type
-      elsif reflection_for(method) || polymorphic_foreign_type?(method)
-        :select
-      elsif column = column_for(method)
-        case column.type
-        when :date, :datetime
-          :date_range
-        when :string, :text
-          :string
-        when :integer, :float, :decimal
-          :numeric
-        when :boolean
-          :boolean
+    # Array of ransack attributes (form field names) that should be collected to filter on the given attribute
+    def fields(methods: nil)
+      return filter_fields if filter_fields.present?
+
+      @_fields ||= begin
+        if collection.present?
+          [SelectField.new("#{attribute}_i_cont", attribute.titleize, icon || 'search', options, collection)]
+        elsif column = column_for(attribute)
+          case column.type
+          when :date, :datetime
+            [
+              SearchField.new("#{attribute}_gteq", attribute.titleize, icon || 'calendar-date', options.merge(placeholder: "From")),
+              SearchField.new("#{attribute}_lteq", attribute.titleize, icon || 'calendar-date', options.merge(placeholder: "To"))
+            ]
+          when :integer, :float, :decimal
+            [
+              SearchField.new("#{attribute}_gteq", attribute.titleize, icon || '123', options.merge(placeholder: "From")),
+              SearchField.new("#{attribute}_lteq", attribute.titleize, icon || '123', options.merge(placeholder: "To"))
+            ]
+          when :string, :text
+            [SearchField.new("#{attribute}_i_cont", attribute.titleize, icon || 'search', options)]
+          when :boolean
+            [SelectField.new("#{attribute}_eq", attribute.titleize, icon, options, [true, false])]
+          end
+        else
+          []
         end
       end
     end
@@ -95,17 +122,7 @@ module DryCrud
     private
 
     def column_for(method)
-      klass.columns_hash[method.to_s] if klass.respond_to? :columns_hash
+      model_class.columns_hash[method.to_s] if model_class.respond_to? :columns_hash
     end
   end
 end
-
-
-# GOAL
-# Filter by column
-# 1. String - free form
-# 2. String - dropdown
-# 3. Date range - pickers
-# 4. Date/Time range - pickers
-# 5. Numeric range
-#

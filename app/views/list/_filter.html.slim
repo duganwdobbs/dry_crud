@@ -5,8 +5,19 @@
     .h4.mt-3.mb-1 Filters
     .hstack.gap-2
       - filters.each do |filter|
-        div
-          = f.label filter.ransack_attribute
-          = f.search_field filter.ransack_attribute, class: 'form-control'
+        - filter.fields.each do |field|
+          div
+            = f.label field.label
+            - case field
+              - when DryCrud::SearchField
+                .input-group
+                  - if field.icon.present?
+                    .input-group-text.bi class="bi-#{field.icon}"
+                  = f.search_field field.name, class: 'form-control', **field.options
+              - when DryCrud::SelectField
+                .input-group
+                  - if field.icon.present?
+                    .input-group-text.bi class="bi-#{field.icon}"
+                  = f.select field.name, field.collection, field.options, class: 'form-select'
       div.mt-auto
         = submit_tag ti(:"button.filter"), class: 'btn btn-primary'
