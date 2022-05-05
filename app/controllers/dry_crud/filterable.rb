@@ -44,20 +44,22 @@ module DryCrud
       #   ...
       #
       def add_filter(attribute, options = {})
-        self.filters << Filter.new(model_class, attribute, options)
+        html_options = options.delete(:html_options)
+        self.filters << Filter.new(model_class, attribute, options, html_options)
       end
     end
 
   end
 
   class Field
-    attr_reader :name, :label, :icon, :options
+    attr_reader :name, :label, :icon, :options, :html_options
 
-    def initialize(name, label, icon, options)
+    def initialize(name, label, icon, options, html_options)
       @name = name
       @label = label
       @icon = icon
-      @options = options
+      @options = options || {}
+      @html_options = html_options || {}
     end
   end
 
@@ -66,16 +68,16 @@ module DryCrud
   class SelectField < Field
     attr_reader :collection
 
-    def initialize(name, label, icon, options, collection)
-      super(name, label, icon, options.reverse_merge(include_blank: true))
+    def initialize(name, label, icon, options, html_options, collection)
+      super(name, label, icon, options.reverse_merge(include_blank: true), html_options)
       @collection = collection
     end
   end
 
   class Filter
-    attr_reader :model_class, :attribute, :filter_fields, :collection, :icon, :options
+    attr_reader :model_class, :attribute, :filter_fields, :collection, :icon, :options, :html_options
 
-    def initialize(model_class, attribute, options)
+    def initialize(model_class, attribute, options, html_options)
       @model_class = model_class
       @attribute = attribute.to_s
 
@@ -83,11 +85,13 @@ module DryCrud
       @collection = options.delete(:collection)
       @icon = options.delete(:icon)
       @options = options
+      @html_options = html_options || {}
     end
 
-    # TODO: TLA 5/5/2022 - Add multi-select (select2?)
+    # TODO: TLA 5/5/2022 - Add multi-select (tom-select)
     # TODO: TLA 5/5/2022 - Add date picker
     # TODO: TLA 5/5/2022 - Add time picker?
+    # TODO: TLA 5/5/2022 - Add "Clear Filters" button
 
     # Array of ransack attributes (form field names) that should be collected to filter on the given attribute
     def fields(methods: nil)
@@ -95,23 +99,28 @@ module DryCrud
 
       @_fields ||= begin
         if collection.present?
-          [SelectField.new("#{attribute}_i_cont", attribute.titleize, icon || 'search', options, collection)]
+          multiple = options.delete(:multiple)
+          if multiple
+            [SelectField.new("#{attribute}_i_cont_any", attribute.titleize, icon || 'search', options, html_options.merge(multiple: true), collection)]
+          else
+            [SelectField.new("#{attribute}_i_cont", attribute.titleize, icon || 'search', options, html_options, collection)]
+          end
         elsif column = column_for(attribute)
           case column.type
           when :date, :datetime
             [
-              SearchField.new("#{attribute}_gteq", attribute.titleize, icon || 'calendar-date', options.merge(placeholder: "From")),
-              SearchField.new("#{attribute}_lteq", attribute.titleize, icon || 'calendar-date', options.merge(placeholder: "To"))
+              SearchField.new("#{attribute}_gteq", attribute.titleize, icon || 'calendar-date', options, html_options.merge(placeholder: "From")),
+              SearchField.new("#{attribute}_lteq", attribute.titleize, icon || 'calendar-date', options, html_options.merge(placeholder: "To"))
             ]
           when :integer, :float, :decimal
             [
-              SearchField.new("#{attribute}_gteq", attribute.titleize, icon || '123', options.merge(placeholder: "From")),
-              SearchField.new("#{attribute}_lteq", attribute.titleize, icon || '123', options.merge(placeholder: "To"))
+              SearchField.new("#{attribute}_gteq", attribute.titleize, icon || '123', options, html_options.merge(placeholder: "From")),
+              SearchField.new("#{attribute}_lteq", attribute.titleize, icon || '123', options, html_options.merge(placeholder: "To"))
             ]
           when :string, :text
-            [SearchField.new("#{attribute}_i_cont", attribute.titleize, icon || 'search', options)]
+            [SearchField.new("#{attribute}_i_cont", attribute.titleize, icon || 'search', options, html_options)]
           when :boolean
-            [SelectField.new("#{attribute}_eq", attribute.titleize, icon, options, [true, false])]
+            [SelectField.new("#{attribute}_eq", attribute.titleize, icon, options, html_options, [true, false])]
           end
         else
           []

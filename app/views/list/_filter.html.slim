@@ -2,22 +2,4 @@
   = search_form_for @rq, as: :rq, url: polymorphic_path(path_args(model_class), returning: true) do |f|
     = hidden_field_tag :returning, true
     = hidden_field_tag :page, 1
-    .h4.mt-3.mb-1 Filters
-    .hstack.gap-2
-      - filters.each do |filter|
-        - filter.fields.each do |field|
-          div
-            = f.label field.label
-            - case field
-              - when DryCrud::SearchField
-                .input-group
-                  - if field.icon.present?
-                    .input-group-text.bi class="bi-#{field.icon}"
-                  = f.search_field field.name, class: 'form-control', **field.options
-              - when DryCrud::SelectField
-                .input-group
-                  - if field.icon.present?
-                    .input-group-text.bi class="bi-#{field.icon}"
-                  = f.select field.name, field.collection, field.options, class: 'form-select'
-      div.mt-auto
-        = submit_tag ti(:"button.filter"), class: 'btn btn-primary'
+    = render 'list/filter_fields', form: f, filters: filters

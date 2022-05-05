@@ -1,0 +1,4 @@
+.input-group
+  - if field.icon.present?
+    .input-group-text.bi class="bi-#{field.icon}"
+  = form.search_field field.name, **field.html_options.reverse_merge(class: 'form-control')
