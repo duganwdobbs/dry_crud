@@ -14,6 +14,7 @@ gem 'jbuilder'
 gem 'webpacker', '~> 4.0'
 
 gem 'kaminari'
+gem 'ransack', '~> 2.6'
 
 gem 'sass-rails'
 gem 'turbolinks'

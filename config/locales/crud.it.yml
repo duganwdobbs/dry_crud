@@ -21,6 +21,7 @@ it:
       save: Salva
       cancel: Annulla
       search: Cerca
+      filter: Filtro
 
     link:
       show: Mostra

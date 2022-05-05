@@ -1,0 +1,12 @@
+- if policy(model_class).search? || policy(model_class).filter?
+  = search_form_for @rq, as: :rq, url: polymorphic_path(path_args(model_class), returning: true) do |f|
+    = hidden_field_tag :returning, true
+    = hidden_field_tag :page, 1
+    .h4.mt-3.mb-1 Filters
+    .hstack.gap-2
+      - filters.each do |filter|
+        div
+          = f.label filter.ransack_attribute
+          = f.search_field filter.ransack_attribute, class: 'form-control'
+      div.mt-auto
+        = submit_tag ti(:"button.filter"), class: 'btn btn-primary'

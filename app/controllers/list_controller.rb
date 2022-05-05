@@ -58,6 +58,7 @@ class ListController < ApplicationController
   end
 
   # Include these modules after the #list_entries method is defined.
+  include DryCrud::Filterable
   include DryCrud::Searchable
   include DryCrud::Sortable
 
