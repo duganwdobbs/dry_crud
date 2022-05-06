@@ -153,13 +153,20 @@ module FormatHelper
 
   # Renders a link to the given association entry.
   def assoc_link(assoc, val)
-    link_to_if(assoc_link?(assoc, val), val.to_s, val)
+    path_arguments = parents.map(&:to_sym) + [val]
+
+    link_to_if(assoc_link?(assoc, val), val.to_s, path_arguments)
   end
 
-  # Returns true if no link should be created when formatting the given
+  # Returns true if a link should be created when formatting the given
   # association.
   def assoc_link?(_assoc, val)
-    respond_to?("#{val.class.model_name.singular_route_key}_path".to_sym)
+    components = parents.clone
+    components << val.class.model_name.singular_route_key
+    components << 'path'
+    path_string = components.join("_")
+
+    respond_to?(path_string.to_sym)
   end
 
 end
