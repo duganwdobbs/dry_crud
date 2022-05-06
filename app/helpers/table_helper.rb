@@ -31,7 +31,7 @@ module TableHelper
     if entries.present?
       plain_table(entries, *attrs, &block)
     else
-      tag.div(ti(:no_list_entries), class: 'table')
+      tag.div(ti(:no_list_entries), class: 'table mx-2')
     end
   end
 
