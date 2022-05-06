@@ -88,12 +88,7 @@ module DryCrud
       @html_options = html_options || {}
     end
 
-    # TODO: TLA 5/5/2022 - Add multi-select (tom-select)
-    # TODO: TLA 5/5/2022 - Add date picker
-    # TODO: TLA 5/5/2022 - Add time picker?
-    # TODO: TLA 5/5/2022 - Add "Clear Filters" button
-
-    # Array of ransack attributes (form field names) that should be collected to filter on the given attribute
+    # Array of Field objects (subclasses) that should be collected to filter on the given attribute
     def fields(methods: nil)
       return filter_fields if filter_fields.present?
 
@@ -107,10 +102,20 @@ module DryCrud
           end
         elsif column = column_for(attribute)
           case column.type
-          when :date, :datetime
+          when :date
             [
-              SearchField.new("#{attribute}_gteq", attribute.titleize, icon || 'calendar-date', options, html_options.merge(placeholder: "From")),
-              SearchField.new("#{attribute}_lteq", attribute.titleize, icon || 'calendar-date', options, html_options.merge(placeholder: "To"))
+              SearchField.new("#{attribute}_gteq", "#{attribute.titleize} (From)", icon || 'calendar-date', options, html_options.merge(placeholder: "From", type: :date)),
+              SearchField.new("#{attribute}_lteq", "#{attribute.titleize} (To)", icon || 'calendar-date', options, html_options.merge(placeholder: "To", type: :date))
+            ]
+          when :datetime
+            [
+              SearchField.new("#{attribute}_gteq", "#{attribute.titleize} (From)", icon || 'clock', options, html_options.merge(type: 'datetime-local')),
+              SearchField.new("#{attribute}_lteq", "#{attribute.titleize} (To)", icon || 'clock', options, html_options.merge(type: 'datetime-local'))
+            ]
+          when :time
+            [
+              SearchField.new("#{attribute}_gteq", "#{attribute.titleize} (From)", icon || 'clock', options, html_options.merge(placeholder: "From", type: :time)),
+              SearchField.new("#{attribute}_lteq", "#{attribute.titleize} (To)", icon || 'clock', options, html_options.merge(placeholder: "To", type: :time))
             ]
           when :integer, :float, :decimal
             [
