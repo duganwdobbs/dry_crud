@@ -53,7 +53,7 @@ class ListController < ApplicationController
   # <tt>ActiveRecord::Relation</tt>.
   # Some of the modules included extend this method.
   def list_entries
-    @pagy, @records = pagy(policy_scope(model_class))
+    @pagy, @records = pagy(policy_scope(model_scope))
     @records
   end
 
