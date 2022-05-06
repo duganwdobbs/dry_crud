@@ -1,15 +1,18 @@
-.h4.mt-3.mb-1="Filter".pluralize(filters.count)
-.hstack.gap-2
-  - filters.each do |filter|
-    - filter.fields.each do |field|
-      div.w-100
-        = form.label field.label
-        - case field
-          - when DryCrud::SearchField
-            = render 'list/search_field', form: form, field: field
-          - when DryCrud::SelectField
-            = render 'list/select_field', form: form, field: field
-  div.mt-auto
-    = submit_tag ti(:"button.filter"), class: 'btn btn-primary'
-  div.mt-auto
-    = link_to "Clear", nil, class: 'btn btn-outline-danger'
+.card.rounded-0.border-top-0.border-start-0.border-end-0
+  .card-header
+    .h6="Filter".pluralize(filters.count)
+  .card-body
+    .vstack.gap-0
+      - filters.each do |filter|
+        - filter.fields.each do |field|
+          = form.label field.label
+          .mb-2
+            - case field
+              - when DryCrud::SearchField
+                = render 'list/search_field', form: form, field: field
+              - when DryCrud::SelectField
+                = render 'list/select_field', form: form, field: field
+  .card-footer
+    .hstack.gap-1
+      = submit_tag ti(:"button.filter"), class: 'btn btn-outline-primary btn-sm w-100'
+      = link_to "Clear Filters", nil, class: 'btn btn-outline-danger btn-sm w-100'
