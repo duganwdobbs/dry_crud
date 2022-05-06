@@ -31,7 +31,7 @@ If a dry_crud file exists in your application, it will be used, if not, the one 
 To integrate dry_crud into your code, only a few additions are required:
 
 * For uniform CRUD functionality, just subclass your controllers from CrudController and define the +permitted_attrs+ (for StrongParameters).
-* Optionally defina a +crud_attrs+ class variable that is an array or block that returns an array of modde field names in your controller to limit what is crud'able.
+* Optionally defina a +crud_attrs+ class variable that is an array or block that returns an array of model field names in your controller to limit what is crud'able.
 * Overwrite the +to_s+ method of your models for a human-friendly representation in captions.
 * Optionally define a +list+ scope in your models to be used in the +index+ action.
 * Optionally define a +options_list+ scope in your models to be used in select dropdowns.

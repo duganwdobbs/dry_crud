@@ -45,7 +45,9 @@ module DryCrud
       #
       def add_filter(attribute, options = {})
         html_options = options.delete(:html_options)
-        self.filters << Filter.new(model_class, attribute, options, html_options)
+        # Use a setter here (+=) in stead of a mutator like << so we don't
+        # modify the superclass's version of filters - see the class_attribute documentation for more.
+        self.filters += [Filter.new(model_class, attribute, options, html_options)]
       end
     end
 
