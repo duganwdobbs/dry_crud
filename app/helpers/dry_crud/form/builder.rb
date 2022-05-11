@@ -80,7 +80,7 @@ module DryCrud
       end
 
       # Add form-control class to all input fields.
-      %w[text_field password_field email_field
+      %w[text_field password_field email_field phone_field
          number_field date_field time_field datetime_field].each do |method|
         define_method(method) do |attr, html_options = {}|
           add_css_class(html_options, 'form-control')

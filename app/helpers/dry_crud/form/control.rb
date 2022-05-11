@@ -73,6 +73,8 @@ module DryCrud
                     when :password_field
                       tag.i('', class: %i[bi bi-key-fill])
                     when :email_field then '@'
+                    when :phone_field 
+                      tag.i('', class: %i[bi bi-telephone-fill])
                     else
                       if attr.to_s.include?('name')
                         tag.i('', class: %i[bi bi-person-fill])
