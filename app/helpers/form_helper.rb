@@ -44,6 +44,8 @@ module FormHelper
     options = attrs.extract_options!
     attrs = default_crud_attrs - %i[created_at updated_at] if attrs.blank?
     attrs << options
+    # debugger
+    # entry = parents.prepend(entry) if parents.present?
     standard_form(path_args(entry), *attrs, &block)
   end
 
