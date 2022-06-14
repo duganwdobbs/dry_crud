@@ -43,7 +43,7 @@ module UtilityHelper
     if controller.crud_attrs.is_a? Array
       controller.crud_attrs
     elsif controller.crud_attrs.is_a? Proc
-      controller.instance_exec(&controller.crud_attrs) & model_class.column_names.map(&:to_sym)
+      controller.instance_exec(&controller.crud_attrs)
     else
       attrs = model_class.column_names.map(&:to_sym)
       attrs - %i[id position password encrypted_password]

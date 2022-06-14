@@ -142,9 +142,7 @@ module FormatHelper
   # +has_many+ association.
   def format_has_many(obj, assoc)
     values = obj.send(assoc.name)
-    if values.size == 1
-      assoc_link(assoc, values.first)
-    elsif values.present?
+    if values.present?
       simple_list(values) { |val| assoc_link(assoc, val) }
     else
       ta(:no_entry, assoc)
