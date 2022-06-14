@@ -10,7 +10,7 @@ module DryCrud
       # direction.
       def sort_header(attr, label = nil)
         label ||= attr_header(attr)
-        template.link_to(sort_params(attr), class: 'text-decoration-none') do
+        template.link_to(sort_params(attr), class: 'text-decoration-none text-nowrap') do
           tag.span(label) + current_mark(attr)
         end
       end
