@@ -1,4 +1,4 @@
-- if policy(model_class).search?
+- if policy(model_class).respond_to?(:search?) && policy(model_class).search?
   .mx-2
     = form_tag(nil, { method: :get, role: 'search' }) do
       = hidden_field_tag :returning, true

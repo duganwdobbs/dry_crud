@@ -29,6 +29,7 @@ class ListController < ApplicationController
   #
   # List all entries of this model.
   def index
+    authorize(entry)
     entries
   end
 
