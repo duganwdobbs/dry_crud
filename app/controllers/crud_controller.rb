@@ -182,7 +182,7 @@ class CrudController < ListController
   # template, otherwise redirect.
   def render_or_redirect_on_failure(options)
     if options[:render_on_failure]
-      render options[:render_on_failure]
+      render options[:render_on_failure], status: :unprocessable_entity
     else
       redirect_on_failure(options)
     end
