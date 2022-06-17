@@ -76,7 +76,7 @@ class CrudController < ListController
   def edit
     authorize(entry)
     add_breadcrumb display_name(entry), show_path
-    add_breadcrumb "Edit"
+    add_breadcrumb 'Edit'
   end
 
   #   PUT /entries/1
