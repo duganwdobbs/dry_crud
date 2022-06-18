@@ -70,14 +70,26 @@ module DryCrud
       end
 
       # Render a boolean field.
+      # def boolean_field(attr, html_options = {})
+      #   tag.div(class: 'checkbox') do
+      #     tag.label do
+      #       detail = html_options.delete(:detail) || '&nbsp;'.html_safe
+
+      #       safe_join([check_box(attr, html_options), ' ', detail])
+      #     end
+      #   end
+      # end
       def boolean_field(attr, html_options = {})
-        tag.div(class: 'checkbox') do
+        tag.div(class: 'form-check form-switch') do
           tag.label do
-            detail = html_options.delete(:detail) || '&nbsp;'.html_safe
-            safe_join([check_box(attr, html_options), ' ', detail])
+            add_css_class(html_options, 'form-check-input')
+            detail = html_options.delete(:detail) || captionize(attr, object.class)
+            label = label(attr, detail, class: 'form-check-label')
+            safe_join([check_box(attr, html_options), ' ', label])
           end
         end
       end
+
 
       # Add form-control class to all input fields.
       %w[text_field password_field email_field phone_field

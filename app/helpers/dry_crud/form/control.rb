@@ -89,8 +89,10 @@ module DryCrud
         container_classes << 'text-danger' if errors?
 
         tag.div(class: container_classes) do
-          builder.label(attr, caption, class: 'col-md-12 form-label') +
-            tag.div(content, class: "col-md-#{span}")
+          parts = []
+          parts << builder.label(attr, caption, class: 'col-md-12 form-label') unless field_method == :boolean_field
+          parts << tag.div(content, class: "col-md-#{span}")
+          parts.join.html_safe
         end
       end
 
@@ -102,7 +104,7 @@ module DryCrud
       def content
         @content ||= begin
           content = input
-          content = builder.with_addon(content, prefix: prefix, addon: addon || REQUIRED_MARK)
+          content = builder.with_addon(content, prefix: prefix, addon: addon || REQUIRED_MARK) unless field_method == :boolean_field
           content << builder.help_block(help) if help.present?
           content
         end
