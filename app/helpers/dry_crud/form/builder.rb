@@ -22,7 +22,7 @@ module DryCrud
 
       delegate :association, :column_type, :column_property, :captionize,
                :ti, :ta, :link_to, :tag, :safe_join, :capture,
-               :add_css_class, :assoc_and_id_attr,
+               :add_css_class, :assoc_and_id_attr, :options_for_select,
                to: :template
 
       ### INPUT FIELDS
@@ -110,6 +110,14 @@ module DryCrud
         add_css_class(html_options, 'form-control')
         html_options[:rows] ||= 5
         super(attr, html_options)
+      end
+
+      def enum_field(attr, html_options = {})
+        list = object.defined_enums[attr.to_s]
+        add_css_class(html_options, 'form-select')
+        collection_select(attr, list, :first, :first,
+                          select_options(attr, html_options),
+                          html_options)
       end
 
       # Render a select element for a :belongs_to association defined by attr.

@@ -22,7 +22,8 @@ module DryCrud
           INPUT_SPANS[:float_field] =
             INPUT_SPANS[:decimal_field] = 2
       INPUT_SPANS[:date_field] =
-        INPUT_SPANS[:time_field] = 3
+        INPUT_SPANS[:enum] =
+          INPUT_SPANS[:time_field] = 3
 
       # Create a new control instance.
       # Takes the form builder, the attribute to build the control for
@@ -73,7 +74,7 @@ module DryCrud
                     when :password_field
                       tag.i('', class: %i[bi bi-key-fill])
                     when :email_field then '@'
-                    when :phone_field 
+                    when :phone_field
                       tag.i('', class: %i[bi bi-telephone-fill])
                     else
                       if attr.to_s.include?('name')
@@ -148,10 +149,12 @@ module DryCrud
 
       # Defines the field method to use based on the attribute
       # type, association or name.
-      # rubocop:disable PerceivedComplexity
+      # rubocop:disable Metrics/PerceivedComplexity
       def detect_field_method
         if type == :text
           :text_area
+        elsif type == :enum
+          :enum_field
         elsif association_kind?(:belongs_to)
           :belongs_to_field
         elsif association_kind?(:has_and_belongs_to_many, :has_many)
@@ -166,7 +169,7 @@ module DryCrud
           :text_field
         end
       end
-      # rubocop:enable PerceivedComplexity
+      # rubocop:enable Metrics/PerceivedComplexity
 
       # The column type of the attribute.
       def type
