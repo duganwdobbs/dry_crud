@@ -22,7 +22,7 @@ module DryCrud
 
       delegate :association, :column_type, :column_property, :captionize,
                :ti, :ta, :link_to, :tag, :safe_join, :capture,
-               :add_css_class, :assoc_and_id_attr, :options_for_select,
+               :add_css_class, :assoc_and_id_attr, :options_for_select, :image_tag, :content_tag,
                to: :template
 
       ### INPUT FIELDS
@@ -167,6 +167,16 @@ module DryCrud
       end
       # rubocop:enable Naming/PredicateName
 
+      def has_one_attached_field(attr, html_options = {})
+        add_css_class(html_options, 'form-control')
+        file_field(attr, html_options)
+      end
+
+      def has_many_attached_field(attr, html_options = {})
+        add_css_class(html_options, 'form-control')
+        file_field(attr, html_options)
+      end
+
       ### VARIOUS FORM ELEMENTS
 
       # Render the error messages for the current form.
@@ -189,6 +199,20 @@ module DryCrud
       # Renders a static text where otherwise form inputs appear.
       def static_text(text)
         tag.p(text, class: 'form-control-static')
+      end
+
+      def preview_block(attr)
+        val = object.send(attr)
+        if val.is_a? ActiveStorage::Attached
+          content_tag(:div, format_attachment_preview(val), class: 'my-1')
+        end
+      end
+
+      def format_attachment_preview(attachment)
+        attachment = attachment.is_a?(ActiveStorage::Attached::One) ? attachment : attachment.first
+        image_tag attachment, style: 'max-height: 50px', class: 'img-thumbnail'
+      rescue ActiveStorage::Preview::UnprocessedError => e
+        'Generating Preview...'
       end
 
       # Generates a help block for fields

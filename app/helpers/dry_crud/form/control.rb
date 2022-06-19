@@ -105,6 +105,7 @@ module DryCrud
         @content ||= begin
           content = input
           content = builder.with_addon(content, prefix: prefix, addon: addon || REQUIRED_MARK) unless field_method == :boolean_field
+          content << builder.preview_block(attr)
           content << builder.help_block(help) if help.present?
           content
         end
@@ -167,6 +168,10 @@ module DryCrud
           :email_field
         elsif builder.respond_to?(:"#{type}_field")
           :"#{type}_field"
+        elsif is_a_has_one_attached?(attr)
+          :has_one_attached_field
+        elsif is_a_has_many_attached?(attr)
+          :has_many_attached_field
         else
           :text_field
         end
@@ -190,7 +195,13 @@ module DryCrud
         end
       end
 
-    end
+      def is_a_has_one_attached?(attr)
+        object.class.reflect_on_attachment(attr).is_a? ActiveStorage::Reflection::HasOneAttachedReflection
+      end
 
+      def is_a_has_many_attached?(attr)
+        object.class.reflect_on_attachment(attr).is_a? ActiveStorage::Reflection::HasManyAttachedReflection
+      end
+    end
   end
 end

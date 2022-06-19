@@ -60,7 +60,7 @@ module FormatHelper
   # Renders an arbitrary content with the given label. Used for uniform
   # presentation.
   def labeled(label, content = nil, &block)
-    content = capture(&block) if block_given?
+    content = capture(&block) if block
     render('shared/labeled', label: label, content: content)
   end
 
@@ -116,16 +116,29 @@ module FormatHelper
     return UtilityHelper::EMPTY_STRING if val.blank? && val != false
 
     case column_type(obj, attr)
-    when :time    then l(val, format: :time)
-    when :date    then f(val.to_date)
+    when :time then l(val, format: :time)
+    when :date then f(val.to_date)
     when :datetime, :timestamp then f(val.time)
     when :text then simple_format(h(val))
     when :decimal
       number_with_precision(val.to_s.to_f,
                             precision: column_property(obj, attr, :scale),
                             delimiter: t('number.format.delimiter'))
-    else f(val)
+
+    else
+      if val.is_a? ActiveStorage::Attached
+        format_attachment_preview(val)
+      else
+        f(val)
+      end
     end
+  end
+
+  def format_attachment_preview(attachment)
+    attachment = attachment.is_a?(ActiveStorage::Attached::One) ? attachment : attachment.first
+    image_tag attachment, style: 'max-height: 50px', class: 'img-thumbnail'
+  rescue ActiveStorage::Preview::UnprocessedError => e
+    'Generating Preview...'
   end
 
   # Formats an ActiveRecord +belongs_to+ or +has_one+ association.
@@ -151,14 +164,14 @@ module FormatHelper
 
   # Renders a link to the given association entry.
   def assoc_link(assoc, val)
-    path_arguments = parents.map { |p|
+    path_arguments = parents.map do |p|
       case p
       when String, Symbol
         p.to_sym
       else
         p
       end
-    } + [val]
+    end + [val]
 
     link_to_if(assoc_link?(assoc, val), val.to_s, path_arguments)
   end
@@ -166,17 +179,17 @@ module FormatHelper
   # Returns true if a link should be created when formatting the given
   # association.
   def assoc_link?(_assoc, val)
-    components = parents.map { |p|
+    components = parents.map do |p|
       case p
       when String, Symbol
         p.to_s
       else
         p.class.model_name.singular_route_key
       end
-    }
+    end
     components << val.class.model_name.singular_route_key
     components << 'path'
-    path_string = components.join("_")
+    path_string = components.join('_')
 
     respond_to?(path_string.to_sym)
   end
