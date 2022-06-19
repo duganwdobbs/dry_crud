@@ -136,7 +136,7 @@ module FormatHelper
 
   def format_attachment_preview(attachment)
     attachment = attachment.is_a?(ActiveStorage::Attached::One) ? attachment : attachment.first
-    image_tag attachment, style: 'max-height: 50px', class: 'img-thumbnail'
+    image_tag attachment.variant(resize_to_limit: [75, 75]), class: 'img-thumbnail'
   rescue ActiveStorage::Preview::UnprocessedError => e
     'Generating Preview...'
   end
