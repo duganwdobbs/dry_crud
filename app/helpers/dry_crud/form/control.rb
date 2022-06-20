@@ -70,17 +70,26 @@ module DryCrud
       private
 
       def prefix
-        @prefix ||= case field_method.to_sym
-                    when :password_field
-                      tag.i('', class: %i[bi bi-key-fill])
-                    when :email_field then '@'
-                    when :phone_field
-                      tag.i('', class: %i[bi bi-telephone-fill])
+        @prefix ||= begin
+          icon = case field_method.to_sym
+                    when :password_field then 'key-fill'
+                    when :email_field then 'envelope'
+                    when :phone_field then 'telephone-fill'
                     else
                       if attr.to_s.include?('name')
-                        tag.i('', class: %i[bi bi-person-fill])
+                        'person-fill'
                       end
                     end
+          tag.i('', class: %I[bi bi-#{icon}]) if icon.present?
+        end
+      end
+
+      def suffix
+        @sufffix ||= if addon
+          addon
+        elsif required && field_method != :boolean_field
+          REQUIRED_MARK
+        end
       end
 
       # Create the HTML markup for any labeled content.
@@ -103,8 +112,7 @@ module DryCrud
       # additionally to the input field.
       def content
         @content ||= begin
-          content = input
-          content = builder.with_addon(content, prefix: prefix, addon: addon || REQUIRED_MARK) unless field_method == :boolean_field
+          content = builder.with_items(input, prefix: prefix, suffix: suffix)
           content << builder.preview_block(attr)
           content << builder.help_block(help) if help.present?
           content

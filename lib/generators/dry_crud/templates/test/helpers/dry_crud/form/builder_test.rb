@@ -23,7 +23,7 @@ module DryCrud
       end
 
       test 'input_field dispatches string attr to string_field' do
-        assert_equal form.with_addon(
+        assert_equal form.with_items(
           form.string_field(:name,
                             required: 'required'),
           '*'

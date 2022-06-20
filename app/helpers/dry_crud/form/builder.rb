@@ -187,12 +187,12 @@ module DryCrud
       end
 
       # Renders the given content with an addon.
-      def with_addon(content, prefix: nil, addon: nil)
+      def with_items(content, prefix: nil, suffix: nil)
         tag.div(class: 'input-group') do
-      	  prefix = tag.span(prefix, class: 'input-group-text') if prefix.present?
-      	  suffix = tag.span(addon, class: 'input-group-text') if addon.present?
+      	  prefix_content = tag.span(prefix, class: 'input-group-text') if prefix.present?
+      	  suffix_content = tag.span(suffix, class: 'input-group-text') if suffix.present?
 
-      	  [prefix, content, suffix].compact.join.html_safe
+      	  [prefix_content, content, suffix_content].compact.join.html_safe
         end
       end
 
