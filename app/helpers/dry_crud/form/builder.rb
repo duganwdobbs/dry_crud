@@ -186,8 +186,8 @@ module DryCrud
                          object: @object)
       end
 
-      # Renders the given content with an addon.
-      def with_items(content, prefix: nil, suffix: nil)
+      # Renders the given content with as a grouped input with prefix and suffix items, if needed.
+      def grouped_input(content, prefix: nil, suffix: nil)
         tag.div(class: 'input-group') do
       	  prefix_content = tag.span(prefix, class: 'input-group-text') if prefix.present?
       	  suffix_content = tag.span(suffix, class: 'input-group-text') if suffix.present?

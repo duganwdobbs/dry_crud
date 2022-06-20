@@ -84,6 +84,7 @@ module DryCrud
         end
       end
 
+      # If a addon was supplied, use that, otherwise, use the required mark if the field is required (and not a boolean field)
       def suffix
         @sufffix ||= if addon
           addon
@@ -108,11 +109,11 @@ module DryCrud
       # Return the currently set content or create it
       # based on the various options given.
       #
-      # Optionally renders addon, required mark and/or a help block
+      # Optionally renders a prefix and suffix (if supplied, or required mark if needed) and/or a preview block and help block
       # additionally to the input field.
       def content
         @content ||= begin
-          content = builder.with_items(input, prefix: prefix, suffix: suffix)
+          content = builder.grouped_input(input, prefix: prefix, suffix: suffix)
           content << builder.preview_block(attr)
           content << builder.help_block(help) if help.present?
           content
