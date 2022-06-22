@@ -124,12 +124,13 @@ module DryCrud
               SearchField.new("#{attribute}_gteq", attribute.titleize, icon || '123', options, html_options.merge(placeholder: "From")),
               SearchField.new("#{attribute}_lteq", attribute.titleize, icon || '123', options, html_options.merge(placeholder: "To"))
             ]
-          when :string, :text
+          when :string, :text, :citext
             [SearchField.new("#{attribute}_i_cont", attribute.titleize, icon || 'search', options, html_options)]
           when :boolean
             [SelectField.new("#{attribute}_eq", attribute.titleize, icon, options, html_options, [true, false])]
           end
         else
+          debugger
           []
         end
       end
