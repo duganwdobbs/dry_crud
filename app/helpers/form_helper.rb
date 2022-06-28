@@ -12,7 +12,8 @@ module FormHelper
     options[:html] ||= {}
     options[:html][:role] ||= 'form'
     options[:builder] ||= DryCrud::Form::Builder
-    options[:cancel_url] ||= polymorphic_path(path_args(object), returning: true)
+    object = path_args(object) unless object.is_a? Array
+    options[:cancel_url] ||= polymorphic_path(object, returning: true)
 
     form_for(object, options, &block)
   end
