@@ -102,7 +102,7 @@ module DryCrud
           else
             [SelectField.new("#{attribute}_i_cont", attribute.titleize, icon || 'search', options, html_options, collection)]
           end
-        elsif column = column_for(attribute)
+        elsif (column = column_for(attribute))
           case column.type
           when :date
             [
@@ -130,7 +130,6 @@ module DryCrud
             [SelectField.new("#{attribute}_eq", attribute.titleize, icon, options, html_options, [true, false])]
           end
         else
-          debugger
           []
         end
       end
