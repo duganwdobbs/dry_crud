@@ -9,13 +9,13 @@ module FormHelper
 
   # Renders a form using Crud::FormBuilder.
   def plain_form(object, options = {}, &block)
+    scoped_object = path_args(object)
     options[:html] ||= {}
     options[:html][:role] ||= 'form'
     options[:builder] ||= DryCrud::Form::Builder
-    object = path_args(object) unless object.is_a? Array
-    options[:cancel_url] ||= polymorphic_path(object, returning: true)
+    options[:cancel_url] ||= polymorphic_path(scoped_object, returning: true)
 
-    form_for(object, options, &block)
+    form_for(scoped_object, options, &block)
   end
 
   # Renders a standard form for the given entry and attributes.
@@ -45,9 +45,7 @@ module FormHelper
     options = attrs.extract_options!
     attrs = default_crud_attrs - %i[created_at updated_at] if attrs.blank?
     attrs << options
-    # debugger
-    # entry = parents.prepend(entry) if parents.present?
-    standard_form(path_args(entry), *attrs, &block)
+    standard_form(entry, *attrs, &block)
   end
 
 end
