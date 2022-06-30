@@ -209,6 +209,8 @@ module DryCrud
       end
 
       def format_attachment_preview(attachment)
+        return unless attachment.present?
+
         attachment = attachment.is_a?(ActiveStorage::Attached::One) ? attachment : attachment.first
         image_tag attachment.variant(resize_to_limit: [75, 75]), class: 'img-thumbnail'
       rescue ActiveStorage::Preview::UnprocessedError => e
