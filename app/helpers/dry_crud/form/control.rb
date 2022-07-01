@@ -8,7 +8,7 @@ module DryCrud
 
       attr_reader :builder, :attr, :args, :options, :addon, :help
 
-      delegate :tag, :object,
+      delegate :tag, :object, :select_choices,
                to: :builder
 
       # Html displayed to mark an input as required.
@@ -72,14 +72,14 @@ module DryCrud
       def prefix
         @prefix ||= begin
           icon = case field_method.to_sym
-                    when :password_field then 'key-fill'
-                    when :email_field then 'envelope'
-                    when :phone_field then 'telephone-fill'
-                    else
-                      if attr.to_s.include?('name')
-                        'person-fill'
-                      end
-                    end
+                 when :password_field then 'key-fill'
+                 when :email_field then 'envelope'
+                 when :phone_field then 'telephone-fill'
+                 else
+                   if attr.to_s.include?('name')
+                     'person-fill'
+                   end
+                 end
           tag.i('', class: %I[bi bi-#{icon}]) if icon.present?
         end
       end
@@ -87,10 +87,10 @@ module DryCrud
       # If a addon was supplied, use that, otherwise, use the required mark if the field is required (and not a boolean field)
       def suffix
         @sufffix ||= if addon
-          addon
-        elsif required && field_method != :boolean_field
-          REQUIRED_MARK
-        end
+                       addon
+                     elsif required && field_method != :boolean_field
+                       REQUIRED_MARK
+                     end
       end
 
       # Create the HTML markup for any labeled content.
@@ -125,6 +125,7 @@ module DryCrud
       def input
         @input ||= begin
           options[:required] = 'required' if required
+          options[:select_choices] = select_choices_with_helper if select_choices_with_helper.present?
           builder.send(field_method, attr, *(args << options))
         end
       end
@@ -171,6 +172,8 @@ module DryCrud
           :belongs_to_field
         elsif association_kind?(:has_and_belongs_to_many, :has_many)
           :has_many_field
+        elsif type == :string && select_choices_with_helper.present?
+          :select_field
         elsif attr.to_s.include?('password')
           :password_field
         elsif attr.to_s.include?('email')
@@ -186,6 +189,12 @@ module DryCrud
         end
       end
       # rubocop:enable Metrics/PerceivedComplexity
+
+      def select_choices_with_helper
+        return @_select_choices_with_helper unless @_select_choices_with_helper.nil?
+
+        @_select_choices_with_helper = select_choices(attr)
+      end
 
       # The column type of the attribute.
       def type
