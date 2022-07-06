@@ -321,19 +321,17 @@ module DryCrud
       # Checks whether a select_choices_{class}_{attr} or select_choices_{attr} helper method is
       # defined and, if so, calls it.
       def select_choices(attr)
-        return @_select_choices_with_helper unless @_select_choices_with_helper.nil?
-
         class_name = @object.class.name.underscore.tr('/', '_')
         select_choices_type_attr_method = :"select_choices_#{class_name}_#{attr}"
         select_choices_attr_method = :"select_choices_#{attr}"
 
-        @_select_choices_with_helper = if template.respond_to?(select_choices_type_attr_method)
-                                         template.send(select_choices_type_attr_method, @object)
-                                       elsif template.respond_to?(select_choices_attr_method)
-                                         template.send(select_choices_attr_method, @object)
-                                       else
-                                         false
-                                       end
+        if template.respond_to?(select_choices_type_attr_method)
+          template.send(select_choices_type_attr_method, @object)
+        elsif template.respond_to?(select_choices_attr_method)
+          template.send(select_choices_attr_method, @object)
+        else
+          false
+        end
       end
 
       private
