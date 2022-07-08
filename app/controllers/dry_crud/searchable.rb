@@ -23,7 +23,7 @@ module DryCrud
 
       # Enhance the list entries with an optional search criteria
       def list_entries
-        @pagy, @records = pagy(super.limit(nil).where(search_conditions))
+        @pagy, @records = pagy(super.limit(nil).offset(nil).where(search_conditions))
         @records
       end
 

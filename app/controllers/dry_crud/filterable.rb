@@ -23,7 +23,7 @@ module DryCrud
 
       # Enhance the list entries with an optional search criteria
       def list_entries
-        @rq = super.limit(nil).ransack(params[:rq], search_key: :rq)
+        @rq = super.limit(nil).offset(nil).ransack(params[:rq], search_key: :rq)
         @pagy, @records = pagy(@rq.result)
         @records
       end
