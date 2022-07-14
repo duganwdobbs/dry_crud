@@ -24,8 +24,7 @@ module DryCrud
       # Enhance the list entries with an optional search criteria
       def list_entries
         @rq = super.ransack(params[:rq], search_key: :rq)
-        @pagy, @records = pagy(@rq.result)
-        @records
+        @rq.result
       end
 
       # Returns true if this controller has searchable columns.
