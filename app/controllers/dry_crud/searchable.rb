@@ -23,8 +23,7 @@ module DryCrud
 
       # Enhance the list entries with an optional search criteria
       def list_entries
-        @pagy, @records = pagy(super.limit(nil).offset(nil).where(search_conditions))
-        @records
+        super.where(search_conditions)
       end
 
       # Concat the word clauses with AND.

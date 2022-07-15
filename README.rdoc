@@ -178,6 +178,8 @@ Forms work very similar. In the most simple case, you just have to specify which
 
   <%= standard_form(@person, :firstname, :lastname, :age, :city) -%>
 
+For :string attributes on your model, by default, a text_field will be rendered.  If you want a dropdown select field, define a specially named helper method with the select choices.  Name the method select_choices_<model_name>_<field_name> or select_choices_<field_name>. The method will be passed the model object as its only parameter.  It should return an array or hash that can be used by the form.select method to create the options.
+
 Of course, custom input fields may be defined as well:
   <%= standard_form(@person, url: custom_update_person_path(@person.id)) do |f| %>
     <%= f.labeled_input_fields :firstname, :lastname %>

@@ -23,9 +23,8 @@ module DryCrud
 
       # Enhance the list entries with an optional search criteria
       def list_entries
-        @rq = super.limit(nil).offset(nil).ransack(params[:rq], search_key: :rq)
-        @pagy, @records = pagy(@rq.result)
-        @records
+        @rq = super.ransack(params[:rq], search_key: :rq)
+        @rq.result
       end
 
       # Returns true if this controller has searchable columns.
@@ -102,7 +101,7 @@ module DryCrud
           else
             [SelectField.new("#{attribute}_i_cont", attribute.titleize, icon || 'search', options, html_options, collection)]
           end
-        elsif column = column_for(attribute)
+        elsif (column = column_for(attribute))
           case column.type
           when :date
             [
@@ -130,7 +129,6 @@ module DryCrud
             [SelectField.new("#{attribute}_eq", attribute.titleize, icon, options, html_options, [true, false])]
           end
         else
-          debugger
           []
         end
       end

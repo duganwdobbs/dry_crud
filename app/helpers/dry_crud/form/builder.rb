@@ -90,7 +90,6 @@ module DryCrud
         end
       end
 
-
       # Add form-control class to all input fields.
       %w[text_field password_field email_field phone_field
          number_field date_field time_field datetime_field].each do |method|
@@ -130,6 +129,14 @@ module DryCrud
         collection_select(attr, list, :first, :first,
                           select_options(attr, html_options),
                           html_options)
+      end
+
+      def select_field(attr, html_options = {})
+        select_choices = html_options.delete(:select_choices) || []
+        add_css_class(html_options, 'form-select')
+        select(attr, select_choices,
+               select_options(attr, html_options),
+               html_options)
       end
 
       # Render a select element for a :belongs_to association defined by attr.
@@ -189,10 +196,10 @@ module DryCrud
       # Renders the given content with as a grouped input with prefix and suffix items, if needed.
       def grouped_input(content, prefix: nil, suffix: nil)
         tag.div(class: 'input-group') do
-      	  prefix_content = tag.span(prefix, class: 'input-group-text') if prefix.present?
-      	  suffix_content = tag.span(suffix, class: 'input-group-text') if suffix.present?
+          prefix_content = tag.span(prefix, class: 'input-group-text') if prefix.present?
+          suffix_content = tag.span(suffix, class: 'input-group-text') if suffix.present?
 
-      	  [prefix_content, content, suffix_content].compact.join.html_safe
+          [prefix_content, content, suffix_content].compact.join.html_safe
         end
       end
 
@@ -284,7 +291,7 @@ module DryCrud
       # * <tt>:span</tt> - Number of columns the content should span.
       # * <tt>:caption</tt> - Different caption for the label.
       def labeled(attr, content = {}, options = {}, &block)
-        if block_given?
+        if block
           options = content
           content = capture(&block)
         end
@@ -309,6 +316,22 @@ module DryCrud
       # Overriden to fullfill contract with method_missing 'labeled_' methods.
       def respond_to_missing?(name, include_private = false)
         labeled_field_method?(name).present? || super
+      end
+
+      # Checks whether a select_choices_{class}_{attr} or select_choices_{attr} helper method is
+      # defined and, if so, calls it.
+      def select_choices(attr)
+        class_name = @object.class.name.underscore.tr('/', '_')
+        select_choices_type_attr_method = :"select_choices_#{class_name}_#{attr}"
+        select_choices_attr_method = :"select_choices_#{attr}"
+
+        if template.respond_to?(select_choices_type_attr_method)
+          template.send(select_choices_type_attr_method, @object)
+        elsif template.respond_to?(select_choices_attr_method)
+          template.send(select_choices_attr_method, @object)
+        else
+          false
+        end
       end
 
       private
