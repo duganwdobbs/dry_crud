@@ -245,6 +245,8 @@ module DryCrud
 
       # Render a cancel link pointing to the given url.
       def cancel_button(url = nil)
+        return if options[:render_cancel_button] == false
+
         url ||= cancel_url
         link_to(ti('button.cancel'), url, class: 'cancel btn btn-outline-primary')
       end
