@@ -76,6 +76,8 @@ module DryCrud
   end
 
   class Filter
+    include FormatHelper
+
     attr_reader :model_class, :attribute, :filter_fields, :collection, :icon, :options, :html_options
 
     def initialize(model_class, attribute, options, html_options)
@@ -97,36 +99,36 @@ module DryCrud
         if collection.present?
           multiple = options.delete(:multiple)
           if multiple
-            [SelectField.new("#{attribute}_i_cont_any", attribute.titleize, icon || 'search', options, html_options.merge(multiple: true), collection)]
+            [SelectField.new("#{attribute}_i_cont_any", captionize(attribute, model_class), icon || 'search', options, html_options.merge(multiple: true), collection)]
           else
-            [SelectField.new("#{attribute}_i_cont", attribute.titleize, icon || 'search', options, html_options, collection)]
+            [SelectField.new("#{attribute}_i_cont", captionize(attribute, model_class), icon || 'search', options, html_options, collection)]
           end
         elsif (column = column_for(attribute))
           case column.type
           when :date
             [
-              SearchField.new("#{attribute}_gteq", "#{attribute.titleize} (From)", icon || 'calendar-date', options, html_options.merge(placeholder: "From", type: :date)),
-              SearchField.new("#{attribute}_lteq", "#{attribute.titleize} (To)", icon || 'calendar-date', options, html_options.merge(placeholder: "To", type: :date))
+              SearchField.new("#{attribute}_gteq", "#{captionize(attribute, model_class)} (From)", icon || 'calendar-date', options, html_options.merge(placeholder: "From", type: :date)),
+              SearchField.new("#{attribute}_lteq", "#{captionize(attribute, model_class)} (To)", icon || 'calendar-date', options, html_options.merge(placeholder: "To", type: :date))
             ]
           when :datetime
             [
-              SearchField.new("#{attribute}_gteq", "#{attribute.titleize} (From)", icon || 'clock', options, html_options.merge(type: 'datetime-local')),
-              SearchField.new("#{attribute}_lteq", "#{attribute.titleize} (To)", icon || 'clock', options, html_options.merge(type: 'datetime-local'))
+              SearchField.new("#{attribute}_gteq", "#{captionize(attribute, model_class)} (From)", icon || 'clock', options, html_options.merge(type: 'datetime-local')),
+              SearchField.new("#{attribute}_lteq", "#{captionize(attribute, model_class)} (To)", icon || 'clock', options, html_options.merge(type: 'datetime-local'))
             ]
           when :time
             [
-              SearchField.new("#{attribute}_gteq", "#{attribute.titleize} (From)", icon || 'clock', options, html_options.merge(placeholder: "From", type: :time)),
-              SearchField.new("#{attribute}_lteq", "#{attribute.titleize} (To)", icon || 'clock', options, html_options.merge(placeholder: "To", type: :time))
+              SearchField.new("#{attribute}_gteq", "#{captionize(attribute, model_class)} (From)", icon || 'clock', options, html_options.merge(placeholder: "From", type: :time)),
+              SearchField.new("#{attribute}_lteq", "#{captionize(attribute, model_class)} (To)", icon || 'clock', options, html_options.merge(placeholder: "To", type: :time))
             ]
           when :integer, :float, :decimal
             [
-              SearchField.new("#{attribute}_gteq", attribute.titleize, icon || '123', options, html_options.merge(placeholder: "From")),
-              SearchField.new("#{attribute}_lteq", attribute.titleize, icon || '123', options, html_options.merge(placeholder: "To"))
+              SearchField.new("#{attribute}_gteq", captionize(attribute, model_class), icon || '123', options, html_options.merge(placeholder: "From")),
+              SearchField.new("#{attribute}_lteq", captionize(attribute, model_class), icon || '123', options, html_options.merge(placeholder: "To"))
             ]
           when :string, :text, :citext
-            [SearchField.new("#{attribute}_i_cont", attribute.titleize, icon || 'search', options, html_options)]
+            [SearchField.new("#{attribute}_i_cont", captionize(attribute, model_class), icon || 'search', options, html_options)]
           when :boolean
-            [SelectField.new("#{attribute}_eq", attribute.titleize, icon, options, html_options, [true, false])]
+            [SelectField.new("#{attribute}_eq", captionize(attribute, model_class), icon, options, html_options, [true, false])]
           end
         else
           []
