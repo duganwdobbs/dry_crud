@@ -14,7 +14,7 @@ module DryCrud
       include Sorting
       include Actions
 
-      attr_reader :entries, :cols, :options, :template
+      attr_reader :entries, :cols, :options, :tbody_options, :template
 
       delegate :tag, :format_attr, :column_type, :association, :dom_id,
                :captionize, :add_css_class, :content_tag_nested,
@@ -23,6 +23,7 @@ module DryCrud
       def initialize(entries, template, options = {})
         @entries = entries
         @template = template
+        @tbody_options = options.delete(:tbody_options)
         @options = options
         @cols = []
       end
@@ -66,7 +67,7 @@ module DryCrud
       def to_html
         tag.table(**options) do
           tag.thead(html_header) +
-            content_tag_nested(:tbody, entries) { |e| html_row(e) }
+            content_tag_nested(:tbody, entries, tbody_options) { |e| html_row(e) }
         end
       end
 
@@ -98,6 +99,7 @@ module DryCrud
       def html_row(entry)
         attrs = {}
         attrs[:id] = dom_id(entry) if entry.respond_to?(:to_key)
+        attrs['data-id'] = entry.id if entry.respond_to?(:id)
         content_tag_nested(:tr, cols, attrs) { |c| c.html_cell(entry) }
       end
 

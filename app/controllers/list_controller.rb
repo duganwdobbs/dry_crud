@@ -16,6 +16,8 @@ class ListController < ApplicationController
   include DryCrud::Rememberable
   include Pagy::Backend
 
+  class_attribute :pagination
+
   define_render_callbacks :index
 
   helper_method :entries
@@ -31,6 +33,11 @@ class ListController < ApplicationController
   def index
     authorize(entry)
     entries
+  end
+
+  # Returns true if this controller uses pagination columns.
+  def pagination_support?
+    pagination.nil? || pagination.present?
   end
 
   protected
