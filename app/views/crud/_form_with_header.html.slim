@@ -1,7 +1,7 @@
-.p-3
-  .card
-    .card-header
-      = render 'form_header', title: title
-    .card-body
-      = render 'form'
-
+= turbo_frame_tag 'crud-form'
+  .p-3
+    .card
+      .card-header
+        = render 'form_header', title: title
+      .card-body
+        = render 'form'
