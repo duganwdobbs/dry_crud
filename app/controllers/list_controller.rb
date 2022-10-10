@@ -40,14 +40,6 @@ class ListController < ApplicationController
     pagination.nil? || pagination.present?
   end
 
-  protected
-
-  def set_breadcrumbs
-    add_breadcrumb models_label, index_path
-  end
-
-  private
-
   # Helper method to access the entries to be displayed in the current index
   # page in an uniform way.
   def entries
@@ -66,9 +58,18 @@ class ListController < ApplicationController
     policy_scope(model_scope)
   end
 
+  protected
+
+  def set_breadcrumbs
+    add_breadcrumb models_label, index_path
+  end
+
+  private
+
   # Include these modules after the #list_entries method is defined.
   include DryCrud::Filterable
   include DryCrud::Searchable
   include DryCrud::Sortable
+  include DryCrud::CsvExportable
 
 end

@@ -19,13 +19,13 @@ module DryCrud
     # Prepended methods for filtering.
     module Prepends
 
-      private
-
       # Enhance the list entries with an optional search criteria
       def list_entries
         @rq = super.ransack(params[:rq], search_key: :rq)
         @rq.result
       end
+
+      private
 
       # Returns true if this controller has searchable columns.
       def filter_support?

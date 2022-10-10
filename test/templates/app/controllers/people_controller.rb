@@ -10,8 +10,6 @@ class PeopleController < AjaxController
                             birthdate gets_up_at last_seen remarks
                             cool email password]
 
-  private
-
   def list_entries
     list = super.includes(city: :country)
     if list.respond_to?(:references)

@@ -9,8 +9,6 @@ module Admin
 
     self.permitted_attrs = %i[name person_ids]
 
-    private
-
     def list_entries
       list = super.includes(:country)
       list = list.references(:countries) if list.respond_to?(:references)
