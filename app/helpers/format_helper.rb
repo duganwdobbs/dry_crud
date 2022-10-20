@@ -80,7 +80,7 @@ module FormatHelper
   # Checks whether a format_{class}_{attr} or format_{attr} helper method is
   # defined and calls it if is.
   def format_with_helper(obj, attr)
-    class_name = obj.class.name.underscore.tr('/', '_')
+    class_name = obj.class.name.demodulize.underscore.tr('/', '_')
     format_type_attr_method = :"format_#{class_name}_#{attr}"
     format_attr_method = :"format_#{attr}"
 

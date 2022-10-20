@@ -323,7 +323,7 @@ module DryCrud
       # Checks whether a select_choices_{class}_{attr} or select_choices_{attr} helper method is
       # defined and, if so, calls it.
       def select_choices(attr)
-        class_name = @object.class.name.underscore.tr('/', '_')
+        class_name = @object.class.name.demodulize.underscore.tr('/', '_')
         select_choices_type_attr_method = :"select_choices_#{class_name}_#{attr}"
         select_choices_attr_method = :"select_choices_#{attr}"
 

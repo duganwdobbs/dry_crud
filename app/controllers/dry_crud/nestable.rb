@@ -40,7 +40,7 @@ module DryCrud
     # Loads the parent entry for the given ActiveRecord class.
     # By default, performs a find with the class_name_id param.
     def parent_entry(clazz)
-      model_ivar_set(clazz.find(params["#{clazz.name.underscore}_id"]))
+      model_ivar_set(clazz.find(params["#{clazz.name.demodulize.underscore}_id"]))
     end
 
     # An array of objects used in url_for and related functions.
@@ -59,7 +59,7 @@ module DryCrud
 
     # The model scope for the current parent resource.
     def parent_scope
-      parent.send(model_class.name.underscore.pluralize)
+      parent.send(model_class.name.demodulize.underscore.pluralize)
     end
 
   end
