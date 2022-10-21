@@ -115,7 +115,7 @@ module DryCrud
 
         def humanize_name(name, controller, humanize_name_option)
           if humanize_name_option
-            name.is_a?(Symbol) && controller ? captionize(name, controller.class) : name.to_s.humanize
+            name.is_a?(Symbol) && controller ? captionize(name, controller.model_class) : name.to_s.humanize
           else
             name.to_s
           end
