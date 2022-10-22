@@ -43,8 +43,6 @@ module FormHelper
   # If a block is given, a custom form may be rendered and attrs is ignored.
   def crud_form(*attrs, &block)
     options = attrs.extract_options!
-    options[:data] = {} unless options.key?(:data)
-    options[:data][:turbo_frame] = :_top unless options[:data].key?(:turbo_frame)
     attrs = default_crud_attrs - %i[created_at updated_at] if attrs.blank?
     attrs << options
     standard_form(entry, *attrs, &block)
