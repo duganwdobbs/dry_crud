@@ -248,7 +248,7 @@ module DryCrud
         return if options[:render_cancel_button] == false
 
         url ||= cancel_url
-        link_to(ti('button.cancel'), url, class: 'cancel btn btn-outline-primary', data: { turbo_frame: :top} )
+        link_to(ti('button.cancel'), url, class: 'cancel btn btn-outline-primary' )
       end
 
       # Depending if the given attribute must be present, return
