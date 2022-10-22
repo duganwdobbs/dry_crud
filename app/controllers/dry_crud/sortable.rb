@@ -35,8 +35,6 @@ module DryCrud
     # Prepended methods for sorting.
     module Prepends
 
-      private
-
       # Enhance the list entries with an optional sort order.
       def list_entries
         sortable = sortable?(params[:sort])
@@ -47,6 +45,8 @@ module DryCrud
           super
         end
       end
+
+      private
 
       # Return the sort expression to be used in the list query.
       def sort_expression

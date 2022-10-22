@@ -16,6 +16,8 @@ class ListController < ApplicationController
   include DryCrud::Rememberable
   include Pagy::Backend
 
+  class_attribute :pagination
+
   define_render_callbacks :index
 
   helper_method :entries
@@ -33,13 +35,10 @@ class ListController < ApplicationController
     entries
   end
 
-  protected
-
-  def set_breadcrumbs
-    add_breadcrumb models_label, index_path
+  # Returns true if this controller uses pagination columns.
+  def pagination_support?
+    pagination.nil? || pagination.present?
   end
-
-  private
 
   # Helper method to access the entries to be displayed in the current index
   # page in an uniform way.
@@ -59,9 +58,18 @@ class ListController < ApplicationController
     policy_scope(model_scope)
   end
 
+  protected
+
+  def set_breadcrumbs
+    add_breadcrumb models_label, index_path
+  end
+
+  private
+
   # Include these modules after the #list_entries method is defined.
   include DryCrud::Filterable
   include DryCrud::Searchable
   include DryCrud::Sortable
+  include DryCrud::CsvExportable
 
 end

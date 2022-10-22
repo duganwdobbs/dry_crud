@@ -8,9 +8,9 @@
           .col-12.col-md-6.col-lg-8.col-xl-9.xcol-xxl-10.border-end.order-2.order-md-1
             = content_for :search
             = render 'list'
-            = render 'pagination'
+            = render 'list_footer'
           .col-12.col-md-6.col-lg-4.col-xl-3.xcol-xxl-2.order-1.order-md-2= content_for :filter
       - else
         = content_for :search
         = render 'list'
-        = render 'pagination'
+        = render 'list_footer'

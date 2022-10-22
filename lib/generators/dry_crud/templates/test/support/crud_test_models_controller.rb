@@ -40,8 +40,6 @@ class CrudTestModelsController < CrudController # :nodoc:
     end
   end
 
-  private
-
   def list_entries
     entries = super
     if params[:filter]
@@ -51,6 +49,8 @@ class CrudTestModelsController < CrudController # :nodoc:
     end
     entries
   end
+
+  private
 
   def build_entry
     entry = super
