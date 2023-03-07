@@ -126,7 +126,7 @@ module FormatHelper
                             delimiter: t('number.format.delimiter'))
 
     else
-      if val.is_a? ActiveStorage::Attached && val.representable?
+      if val.is_a? ActiveStorage::Attached
         format_attachment_preview(val)
       else
         f(val)
@@ -135,8 +135,19 @@ module FormatHelper
   end
 
   def format_attachment_preview(attachment)
+    return unless attachment.present?
+
     attachment = attachment.is_a?(ActiveStorage::Attached::One) ? attachment : attachment.first
-    image_tag attachment.variant(resize_to_limit: [75, 75]), class: 'img-thumbnail'
+
+    if attachment.previewable?
+      image_tag attachment.preview(resize_to_limit: [125, 125]).processed.url, class: 'img-thumbnail'
+    elsif attachment.variable?
+      image_tag attachment.variant(resize_to_limit: [75, 75]), class: 'img-thumbnail'
+    elsif attachment.representable?
+      image_tag attachment.representation(resize_to_limit: [75, 75]).processed.url, class: 'img-thumbnail'
+    else
+      link_to "View Here", url_for: attachment, target: '_blank'
+    end
   rescue ActiveStorage::Preview::UnprocessedError => e
     'Generating Preview...'
   end

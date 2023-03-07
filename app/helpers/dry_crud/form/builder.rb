@@ -21,7 +21,7 @@ module DryCrud
       attr_reader :template
 
       delegate :association, :column_type, :column_property, :captionize,
-               :ti, :ta, :link_to, :tag, :safe_join, :capture,
+               :ti, :ta, :link_to, :tag, :safe_join, :capture, :url_for,
                :add_css_class, :assoc_and_id_attr, :options_for_select, :image_tag, :content_tag,
                to: :template
 
@@ -219,7 +219,16 @@ module DryCrud
         return unless attachment.present?
 
         attachment = attachment.is_a?(ActiveStorage::Attached::One) ? attachment : attachment.first
-        image_tag attachment.variant(resize_to_limit: [75, 75]), class: 'img-thumbnail'
+
+        if attachment.previewable?
+          image_tag attachment.preview(resize_to_limit: [125, 125]).processed.url, class: 'img-thumbnail'
+        elsif attachment.variable?
+          image_tag attachment.variant(resize_to_limit: [75, 75]), class: 'img-thumbnail'
+        elsif attachment.representable?
+          image_tag attachment.representation(resize_to_limit: [75, 75]).processed.url, class: 'img-thumbnail'
+        else
+          link_to "View Here", url_for: attachment, target: '_blank'
+        end
       rescue ActiveStorage::Preview::UnprocessedError => e
         'Generating Preview...'
       end
