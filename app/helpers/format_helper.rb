@@ -126,7 +126,7 @@ module FormatHelper
                             delimiter: t('number.format.delimiter'))
 
     else
-      if val.is_a? ActiveStorage::Attached
+      if val.is_a? ActiveStorage::Attached && val.representable?
         format_attachment_preview(val)
       else
         f(val)

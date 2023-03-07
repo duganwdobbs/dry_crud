@@ -16,3 +16,7 @@ rdoc
 .vscode
 .rdbgrc.breakpoints
 *.code-workspace
+/.idea/dry_crud.iml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
