@@ -175,6 +175,7 @@ module DryCrud
       # rubocop:enable Naming/PredicateName
 
       def has_one_attached_field(attr, html_options = {})
+        html_options[:required] ||= false if entry[:attr].present?
         add_css_class(html_options, 'form-control')
         file_field(attr, html_options)
       end
