@@ -140,11 +140,14 @@ module FormatHelper
     attachment = attachment.is_a?(ActiveStorage::Attached::One) ? attachment : attachment.first
 
     if attachment.previewable?
-      image_tag attachment.preview(resize_to_limit: [125, 125]).processed.url, class: 'img-thumbnail'
+      url = attachment.preview(resize_to_limit: [125, 125]).processed.url
+      link_to image_tag(url, class: 'img-thumbnail'), url_for(attachment), target: '_blank'
     elsif attachment.variable?
-      image_tag attachment.variant(resize_to_limit: [75, 75]), class: 'img-thumbnail'
+      url = attachment.variant(resize_to_limit: [75, 75]).processed.url
+      link_to image_tag(url, class: 'img-thumbnail'), url_for(attachment), target: '_blank'
     elsif attachment.representable?
-      image_tag attachment.representation(resize_to_limit: [75, 75]).processed.url, class: 'img-thumbnail'
+      url = attachment.representation(resize_to_limit: [75, 75]).processed.url
+      link_to image_tag(url, class: 'img-thumbnail'), url_for(attachment), target: '_blank'
     else
       link_to "View Here", url_for: attachment, target: '_blank'
     end
