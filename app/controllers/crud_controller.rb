@@ -22,6 +22,8 @@ class CrudController < ListController
   define_render_callbacks :show, :new, :edit
 
   before_action :entry, only: %i[show new edit update destroy]
+  before_action :set_breadcrumbs, only: %i[show new edit]
+
 
   helper_method :entry, :full_entry_label
 

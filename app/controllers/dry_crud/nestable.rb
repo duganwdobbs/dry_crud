@@ -62,5 +62,19 @@ module DryCrud
       parent.send(model_class.name.demodulize.underscore.pluralize)
     end
 
+    def set_breadcrumbs
+      path = []
+      nesting.each do |nest|
+        path << nest
+        next if path.size == 1 || nest.is_a?(Symbol)
+
+        nest = nest.name.demodulize.underscore.humanize if nest.is_a?(Class) && nest < ActiveRecord::Base
+        add_breadcrumb nest, path
+      end
+      path = path[..-2]
+      path << parent
+      add_breadcrumb parent, path
+    end
+
   end
 end

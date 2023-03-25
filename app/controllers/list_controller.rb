@@ -60,21 +60,6 @@ class ListController < ApplicationController
 
   protected
 
-  def set_breadcrumbs
-    path = []
-    nesting.each do |nest|
-      path << nest
-      next if path.size == 1 || nest.is_a?(Symbol)
-
-      nest = nest.name.demodulize.underscore.humanize if nest.is_a?(Class) && nest < ActiveRecord::Base
-      add_breadcrumb nest, path
-    end
-    path = path[..-2]
-    path << parent
-    add_breadcrumb parent, path
-    # add_breadcrumb models_label, index_path
-  end
-
   private
 
   # Include these modules after the #list_entries method is defined.
