@@ -63,8 +63,10 @@ module DryCrud
     end
 
     def set_breadcrumbs
+      return if parent.blank?
+
       path = []
-      nesting.each do |nest|
+      Array(nesting).each do |nest|
         path << nest
         next if path.size == 1 || nest.is_a?(Symbol)
 
