@@ -35,6 +35,7 @@ class CrudController < ListController
   # Show one entry of this model.
   def show
     authorize(entry)
+    add_breadcrumb readable_name(entry), index_path
     add_breadcrumb display_name(entry), show_path
   end
 
