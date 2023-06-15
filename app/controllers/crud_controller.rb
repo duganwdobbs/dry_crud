@@ -22,6 +22,8 @@ class CrudController < ListController
   define_render_callbacks :show, :new, :edit
 
   before_action :entry, only: %i[show new edit update destroy]
+  before_action :set_breadcrumbs, only: %i[show new edit]
+
 
   helper_method :entry, :full_entry_label
 
@@ -33,6 +35,7 @@ class CrudController < ListController
   # Show one entry of this model.
   def show
     authorize(entry)
+    add_breadcrumb readable_name(entry), index_path
     add_breadcrumb display_name(entry), show_path
   end
 

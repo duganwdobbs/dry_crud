@@ -7,14 +7,14 @@ gem 'puma'
 gem 'rake'
 gem 'sdoc'
 gem 'rspec-rails'
-
-gem 'haml'
 gem 'jbuilder'
-
-gem 'webpacker', '~> 4.0'
-
 gem 'kaminari'
+
 gem 'ransack', '~> 2.6'
+gem 'pagy', '~> 5.10'
+gem 'slim', '~> 4.1'
+gem 'pundit', '~> 2.2'
+gem 'breadcrumbs_on_rails', '~> 4.1'
 
 gem 'sass-rails'
 gem 'turbolinks'

@@ -22,8 +22,6 @@ class ListController < ApplicationController
 
   helper_method :entries
 
-  before_action :set_breadcrumbs
-
   ##############  ACTIONS  ############################################
 
   #   GET /entries
@@ -33,6 +31,8 @@ class ListController < ApplicationController
   def index
     authorize(entry)
     entries
+    set_breadcrumbs
+    add_breadcrumb models_label, index_path
   end
 
   # Returns true if this controller uses pagination columns.
@@ -56,12 +56,6 @@ class ListController < ApplicationController
   # Some of the modules included extend this method.
   def list_entries
     policy_scope(model_scope)
-  end
-
-  protected
-
-  def set_breadcrumbs
-    add_breadcrumb models_label, index_path
   end
 
   private
