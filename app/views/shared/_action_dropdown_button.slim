@@ -1,0 +1,10 @@
+.dropdown
+  button.action.btn.ms-2 data-bs-toggle=:dropdown class=("btn-#{btn_type}")
+    = content
+  ul.dropdown-menu
+    - if !options.any?
+      li.dropdown-item No objects to add.
+    - else
+      - options.each do |option|
+        li.btn-group.w-100.dropdown-item.btn.btn-link
+          = button_to option&.dig(:title), option&.dig(:url), { class: %w[dropdown-item] }.merge(html_options).merge(option&.dig(:html_options) || {})

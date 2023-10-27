@@ -1,0 +1,11 @@
+.dropdown
+  button.action.btn.ms-2 data-bs-toggle=:dropdown class="btn-gold"
+    = content
+  ul.dropdown-menu
+    - if !values_hash.any?
+      li.dropdown-item No objects to filter.
+    - else
+      - values_hash.each do |text, value|
+        li.w-100.dropdown-item
+          = f.check_box field, {multiple:true, onchange: "this.form.submit();" }, value, nil
+          = f.label "#{field}_#{value}", text

@@ -1,0 +1,15 @@
+- btn_class ||= config&.dig(:btn_classes) || 'btn btn-gold ms-2'
+
+.dropdown
+  button.action.btn class="#{btn_class}" data-bs-toggle=:dropdown
+    = content
+  ul.dropdown-menu class="#{config&.dig(:dropdown_classes)}"
+    - if options.any?
+      - options.each do |option|
+        li.btn-group.w-100.dropdown-item
+          - if option[:button_to]
+            = button_to option&.dig(:title), option&.dig(:url), { class: %w[dropdown-item] }.merge(html_options).merge(option&.dig(:html_options) || {})
+          - else
+            = link_to option&.dig(:title), option&.dig(:url), { class: %w[dropdown-item] }.merge(html_options).merge(option&.dig(:html_options) || {})
+    - else
+      li.btn-group.w-100.dropdown-item No selections available.
