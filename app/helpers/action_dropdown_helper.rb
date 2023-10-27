@@ -1,4 +1,4 @@
-module ActionsDropdownHelper
+module ActionDropdownHelper
   include ActionsHelper
 
   def action_dropdown(label, icon = nil, options = [], html_options = {}, config = {})
