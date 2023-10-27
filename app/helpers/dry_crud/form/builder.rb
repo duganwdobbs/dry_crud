@@ -168,7 +168,7 @@ module DryCrud
       # define an instance variable with the pluralized name of the
       # association.
       def has_many_field(attr, html_options = {})
-        html_options[:required] = false if entry[:attr].any?
+        html_options[:required] = false if object[:attr].any?
         html_options[:multiple] = true
         add_css_class(html_options, 'multiselect')
         belongs_to_field(attr, html_options)
@@ -176,7 +176,7 @@ module DryCrud
       # rubocop:enable Naming/PredicateName
 
       def has_one_attached_field(attr, html_options = {})
-        html_options[:required] = false if entry[:attr].present?
+        html_options[:required] = false if object[:attr].present?
         add_css_class(html_options, 'form-control')
         file_field(attr, html_options)
       end
