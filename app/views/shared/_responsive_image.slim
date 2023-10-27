@@ -1,0 +1,16 @@
+ruby:
+  css_class ||= 'card-img-top'
+  img_size ||= 168
+  image_url = image.present? && image.variable? ? image.variant(resize_to_limit: [img_size * 2, img_size * 2]) : default_image_for(image)
+  object_fit ||= 'contain'
+  force_square ||= false
+  force_width ||= false
+  width ||= 130 if force_width
+  style = "object-fit: #{object_fit}; max-width: 100%; max-height: #{img_size}px;"
+  style += "height: #{img_size}px; width: #{img_size}px;" if force_square
+  container_style ||= ""
+  container_style += "width: #{width}px;" if force_width
+
+.img-fluid style=container_style
+  .d-flex.h-100.w-100.align-items-center.justify-content-center
+    = image_tag image_url, class: css_class, style:
