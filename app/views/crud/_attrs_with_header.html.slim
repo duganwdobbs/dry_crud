@@ -1,6 +1,6 @@
 .p-3
   .card
     .card-header
-      = render 'attrs_header'
+      = render 'shared/header', header_text: display_name(entry)
     .card-body
       = render 'attrs'

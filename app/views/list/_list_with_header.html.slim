@@ -1,7 +1,7 @@
 .p-3
   .card
     .card-header
-      = render 'list_header'
+      = render 'shared/header', header_text: I18n.t(:title, scope: %i[list index], models: models_label)
     .card-body.p-0
       - if content_for? :filter
         .row.gx-0

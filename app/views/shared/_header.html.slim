@@ -1,6 +1,6 @@
 .vstack
   div
-    .fw-light.h2.float-start=title
-    .float-end= content_for :actions
+    .fw-light.h2.float-start = header_text
+    .float-end = content_for :actions
   div
     = render_breadcrumbs builder: BootstrapBreadcrumbsBuilder
