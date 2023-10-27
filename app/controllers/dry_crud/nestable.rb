@@ -65,7 +65,7 @@ module DryCrud
     def set_breadcrumbs
       path = []
       Array(nesting).zip(parents).each do |nest,parent|
-        name = readable_name(nest) if nest.is_a?(Class) && nest < ActiveRecord::Base
+        name = display_name(nest) if nest.is_a?(Class) && nest < ActiveRecord::Base
         unless name.blank?
           add_breadcrumb name, path + [nest]
           add_breadcrumb parent, path + [parent]
