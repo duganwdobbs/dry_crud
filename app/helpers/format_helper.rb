@@ -154,7 +154,9 @@ module FormatHelper
   rescue ActiveStorage::Preview::UnprocessedError => e
     'Generating Preview...'
   rescue ActiveStorage::PreviewError => e
-    'Error or broken file'
+    'Error or broken file.'
+  rescue ActiveStorage::FileNotFoundError => e
+    'File missing.'
   end
 
   # Formats an ActiveRecord +belongs_to+ or +has_one+ association.
