@@ -182,7 +182,7 @@ module FormatHelper
 
   # Renders a link to the given association entry.
   def assoc_link(assoc, val)
-    path_arguments = parents.map do |p|
+    path_arguments = (parents || []).map do |p|
       case p
       when String, Symbol
         p.to_sym
@@ -197,7 +197,7 @@ module FormatHelper
   # Returns true if a link should be created when formatting the given
   # association.
   def assoc_link?(_assoc, val)
-    components = parents.map do |p|
+    components = (parents || []).map do |p|
       case p
       when String, Symbol
         p.to_s
