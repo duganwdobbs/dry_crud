@@ -9,7 +9,7 @@ module DryCrud
       attr_reader :builder, :attr, :args, :options, :addon, :help
 
       delegate :tag, :object, :select_choices,
-               to: :builder
+               to: :builder, :add_css_class
 
       # Html displayed to mark an input as required.
       REQUIRED_MARK = '*'.freeze
@@ -40,10 +40,10 @@ module DryCrud
       #   (The value for this option usually is 'required').
       #
       # All the other options will go to the field_method.
-      def initialize(builder, attr, *args)
+      def initialize(builder, attr, *args, **options)
         @builder = builder
         @attr = attr
-        @options = args.extract_options!
+        @options = options
         @args = args
 
         @addon = options.delete(:addon)
@@ -124,9 +124,10 @@ module DryCrud
       # depending on the attribute.
       def input
         @input ||= begin
-          options[:required] = 'required' if required
           options[:select_choices] = select_choices_with_helper if select_choices_with_helper.present?
-          builder.send(field_method, attr, *(args << options))
+          options[:required] = 'required' if required
+          add_css_class(options, 'is-invalid') if errors?
+          builder.send(field_method, attr, *args, **options)
         end
       end
 

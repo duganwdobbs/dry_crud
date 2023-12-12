@@ -14,11 +14,10 @@ module TableHelper
   # appended to the attribute columns.
   # If entries is empty, an appropriate message is rendered.
   # An options hash may be given as the last argument.
-  def plain_table(entries, *attrs)
-    options = attrs.extract_options!
+  def plain_table(entries, *attrs, **options)
     add_css_class(options, 'table table-striped table-hover')
     builder = options.delete(:builder) || DryCrud::Table::Builder
-    builder.table(entries, self, options) do |t|
+    builder.table(entries, self, **options) do |t|
       t.attrs(*attrs)
       yield t if block_given?
     end
@@ -26,10 +25,10 @@ module TableHelper
 
   # Renders a #plain_table for the given entries.
   # If entries is empty, an appropriate message is rendered.
-  def plain_table_or_message(entries, *attrs, &block)
+  def plain_table_or_message(entries, *attrs, **options, &block)
     entries.to_a # force evaluation of relations
     if entries.present?
-      plain_table(entries, *attrs, &block)
+      plain_table(entries, *attrs, **options, &block)
     else
       tag.div(ti(:no_list_entries), class: 'table mx-2')
     end
@@ -38,9 +37,9 @@ module TableHelper
   # Create a table of the +entries+ with the default or
   # the passed attributes in its columns. An options hash may be given
   # as the last argument.
-  def list_table(*attrs, &block)
-    attrs, options = explode_attrs_with_options(attrs, &block)
-    plain_table_or_message(entries, options) do |t|
+  def list_table(*attrs, **options, &block)
+    attrs = attrs_or_default(attrs, &block)
+    plain_table_or_message(entries, **options) do |t|
       t.sortable_attrs(*attrs)
       yield t if block_given?
     end
@@ -53,16 +52,12 @@ module TableHelper
   # If a block is given, the column defined there will be inserted
   # between the given attributes and the actions.
   # An options hash for the table builder may be given as the last argument.
-  def crud_table(*attrs, &block)
-    attrs, options = explode_attrs_with_options(attrs, &block)
-    first, rest = if policy(entry).show?
-      [attrs.first, attrs.drop(1)]
-    else
-      [nil, attrs]
-    end
-    plain_table_or_message(entries, options) do |t|
+  def crud_table(*attrs, **options, &block)
+    attrs = attrs_or_default(attrs, &block)
+    first = attrs.shift
+    plain_table_or_message(entries, **options) do |t|
       t.attr_with_show_link(first) if first
-      t.sortable_attrs(*rest)
+      t.sortable_attrs(*attrs)
       yield t if block_given?
       standard_table_actions(t)
     end
@@ -77,12 +72,12 @@ module TableHelper
 
   private
 
-  def explode_attrs_with_options(attrs)
-    options = attrs.extract_options!
+  def attrs_or_default(attrs)
     if !block_given? && attrs.blank?
-      attrs = default_crud_attrs
+      default_crud_attrs
+    else
+      attrs
     end
-    [attrs, options]
   end
 
 end
