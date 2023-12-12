@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 6.1.0'
+gem 'rails', '~> 7.1.0'
 
 gem 'puma'
 
@@ -8,32 +8,36 @@ gem 'rake'
 gem 'sdoc'
 gem 'rspec-rails'
 gem 'jbuilder'
+
 gem 'kaminari'
 
-gem 'ransack', '~> 2.6'
-gem 'pagy', '~> 5.10'
-gem 'slim', '~> 4.1'
-gem 'pundit', '~> 2.2'
-gem 'breadcrumbs_on_rails', '~> 4.1'
+gem "sprockets-rails"
+gem "jsbundling-rails"
+gem "cssbundling-rails"
+gem "turbo-rails"
+gem "stimulus-rails"
+
+gem 'ransack'
+gem 'pagy'
+gem 'slim'
+gem 'pundit'
+gem 'breadcrumbs_on_rails'
 
 gem 'sass-rails'
-gem 'turbolinks'
 
-gem 'bootsnap', '>= 1.4.2', require: false
+gem 'bootsnap', require: false
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 group :development do
   gem 'web-console'
-  gem 'listen'
   gem 'rubocop'
   gem 'rubocop-rails'
   gem 'spring'
-  gem 'spring-watcher-listen'
 end
 
 gem 'simplecov', require: false
-gem 'byebug', platforms: [:mri]
+gem 'debug', platforms: [:mri, :windows]
 
 # platform specific gems
 

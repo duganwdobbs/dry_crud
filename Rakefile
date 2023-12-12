@@ -37,23 +37,26 @@ namespace :test do
   end
 
   namespace :app do
-    task :environment do
-      ENV['RAILS_ROOT'] = TEST_APP_ROOT
-      ENV['RAILS_ENV'] = 'test'
 
-      require(File.join(TEST_APP_ROOT, 'config', 'environment'))
-    end
+    desc "Initializes the test application with a couple of classes"
+    task init: [:seed, :customize]
+
+    desc "Customize some of the functionality provided by dry_crud"
+    task customize: ['test:app:add_pagination',
+                     'test:app:use_bootstrap',
+                     'test:app:build_assets'
+                     ]
 
     desc "Create a rails test application"
     task :create do
       unless File.exist?(TEST_APP_ROOT)
-        sh "rails new #{TEST_APP_ROOT} --skip-bundle --skip-spring"
+        sh "rails new #{TEST_APP_ROOT} --css=bootstrap --js esbuild"
         file_replace(File.join(TEST_APP_ROOT, 'Gemfile'),
                      /\z/,
                      File.read(File.join(File.dirname(__FILE__),
                                'test', 'templates', 'Gemfile.append')))
         sh "cd #{TEST_APP_ROOT}; bundle install --local" # update Gemfile.lock
-        sh "cd #{TEST_APP_ROOT}; rails webpacker:install"
+
         sh "cd #{TEST_APP_ROOT}; rails g rspec:install"
         FileUtils.rm_f(File.join(TEST_APP_ROOT,
                                  'test', 'performance', 'browsing_test.rb'))
@@ -66,8 +69,8 @@ namespace :test do
                      "require 'simplecov'\nSimpleCov.start do\n" +
                      "  coverage_dir 'coverage/spec'\nend\n")
         file_replace(File.join(TEST_APP_ROOT, 'spec', 'rails_helper.rb'),
-          "# Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }",
-          "Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }")
+          "# Rails.root.glob('spec/support/**/*.rb').sort.each { |f| require f }",
+          "Rails.root.glob('spec/support/**/*.rb').sort.each { |f| require f }")
       end
     end
 
@@ -83,6 +86,13 @@ namespace :test do
                            destination_root: TEST_APP_ROOT).invoke_all
     end
 
+    task :environment do
+      ENV['RAILS_ROOT'] = TEST_APP_ROOT
+      ENV['RAILS_ENV'] = 'test'
+
+      require(File.join(TEST_APP_ROOT, 'config', 'environment'))
+    end
+
     desc "Populates the test application with some models and controllers"
     task populate: [:generate_crud] do
       # copy test app templates
@@ -94,9 +104,6 @@ namespace :test do
       FileUtils.cp_r(File.join(File.dirname(__FILE__),
                                'test', 'templates', 'test', 'fixtures'),
                      File.join(TEST_APP_ROOT, 'spec'))
-
-      # replace some unused files
-      FileUtils.rm_f(File.join(TEST_APP_ROOT, 'public', 'index.html'))
 
       # remove unused template type, erb or haml
       exclude = %w[1 yes true].include?(ENV['HAML']) ? 'erb' : 'haml'
@@ -115,15 +122,6 @@ namespace :test do
         sh "rake db:migrate RAILS_ENV=test --trace"
       end
     end
-
-    desc "Initializes the test application with a couple of classes"
-    task init: [:seed, :customize]
-
-    desc "Customize some of the functionality provided by dry_crud"
-    task customize: ['test:app:add_pagination',
-                     'test:app:add_jquery'
-                     # 'test:app:use_bootstrap'
-                     ]
 
     desc "Adds pagination to the test app"
     task :add_pagination do
@@ -144,44 +142,16 @@ namespace :test do
                    "= paginate entries\n\n= render 'list'")
     end
 
-    desc "Adds jQuery to webpack"
-    task :add_jquery do
-      sh "cd #{TEST_APP_ROOT}; yarn add jquery"
-
-      app_js = File.join(TEST_APP_ROOT, 'app', 'javascript', 'packs', 'application.js')
-      if File.exist?(app_js) && File.read(app_js) !~ /jquery/
-        file_replace(app_js,
-                    /\n\z/,
-                    "\n\nimport $ from \"jquery\"\n" \
-                    "window.$ = $;\n")
-        end
-    end
-
-    desc "Use Boostrap in the test app"
+    desc "Remove sample scss in the test app"
     task :use_bootstrap do
-      sh "cd #{TEST_APP_ROOT}; yarn add bootstrap popper.js"
-
-       css = File.join(TEST_APP_ROOT,
-                       'app', 'assets', 'stylesheets', 'application.css')
-
-       if File.exists?(css)
-         file_replace(css,
-                      /\n\z/,
-                      "\n\n@import 'bootstrap/scss/bootstrap';\n")
-         FileUtils.mv(css,
-                      File.join(TEST_APP_ROOT,
-                                'app', 'assets', 'stylesheets',
-                                'application.scss'))
-       end
-       file_replace(File.join(TEST_APP_ROOT,
-                              'app', 'javascript', 'packs',
-                              'application.js'),
-                    /\n\z/,
-                    "\n\nrequire('bootstrap/dist/js/bootstrap');\n")
-       FileUtils.rm_f(File.join(TEST_APP_ROOT,
-                                'app', 'assets', 'stylesheets', 'sample.scss'))
+      FileUtils.rm_f(File.join(TEST_APP_ROOT,
+                               'app', 'assets', 'stylesheets', 'sample.scss'))
     end
 
+    desc "Build javascript and css in the test app"
+    task :build_assets do
+      sh "cd #{TEST_APP_ROOT}; rails javascript:build css:build"
+    end
   end
 end
 

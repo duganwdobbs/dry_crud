@@ -42,7 +42,7 @@ describe 'DryCrud::Form::Builder' do
       other_ids: :has_many_field,
       more_ids: :has_many_field }.each do |attr, method|
       it "dispatches #{attr} attr to #{method}" do
-        expect(form).to receive(method).with(attr, {})
+        expect(form).to receive(method).with(attr)
         form.input_field(attr)
       end
 
@@ -63,12 +63,12 @@ describe 'DryCrud::Form::Builder' do
   describe '#labeled_input_field' do
     context 'when required' do
       subject { form.labeled_input_field(:name) }
-      it { is_expected.to include('input-group-append') }
+      it { is_expected.to include('input-group-text') }
     end
 
     context 'when not required' do
       subject { form.labeled_input_field(:remarks) }
-      it { is_expected.not_to include('input-group-append') }
+      it { is_expected.not_to include('input-group-text') }
     end
 
     context 'with help text' do

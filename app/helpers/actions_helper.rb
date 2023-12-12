@@ -21,7 +21,7 @@ module ActionsHelper
 
   # Outputs an icon for an action with an optional label.
   def action_icon(icon, label = nil)
-    html = content_tag(:i, '', class: "bi bi-#{icon}")
+    html = tag.i('', class: "bi-#{icon}")
     html << ' ' << label if label
     html
   end
@@ -41,7 +41,7 @@ module ActionsHelper
     return unless policy(entry).edit?
 
     path ||= path_args(entry)
-    path = path.is_a?(String) ? path : edit_polymorphic_path(path)
+    path = edit_polymorphic_path(path) unless path.is_a?(String)
     action_link(ti('link.edit'), 'pencil', path)
   end
 
@@ -51,12 +51,9 @@ module ActionsHelper
     return unless policy(entry).destroy?
 
     path ||= path_args(entry)
-    action_button(ti('link.delete'), 'trash', path,
-                {
-                  data: { confirm: ti(:confirm_delete, model: models_label(plural: false)) },
-                  method: :delete,
-                  class: 'btn-outline-danger'
-                })
+    action_link(ti('link.delete'), 'trash', path,
+                data: { 'turbo-confirm': ti(:confirm_delete),
+                        'turbo-method': :delete })
   end
 
   # Standard list action to the given path.
@@ -65,7 +62,7 @@ module ActionsHelper
     return unless policy(model_class).index?
 
     path ||= path_args(model_class)
-    path = path.is_a?(String) ? path : polymorphic_path(path, url_options)
+    path = polymorphic_path(path, url_options) unless path.is_a?(String)
     action_link(ti('link.list'), 'list', path)
   end
 
@@ -75,7 +72,7 @@ module ActionsHelper
     return unless policy(model_class).new?
 
     path ||= path_args(model_class)
-    path = path.is_a?(String) ? path : new_polymorphic_path(path, url_options)
+    path = new_polymorphic_path(path, url_options) unless path.is_a?(String)
     action_link(I18n.t(:add, scope: %i[list index], label: models_label(plural: false)), 'plus-lg', path, title: "Add a new #{models_label(plural: false).downcase}")
   end
 
